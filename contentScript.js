@@ -87,13 +87,13 @@ const init = () => {
       markBooks = grabMarkBooks(markBooks);
       markBooks = cleanseValues(markBooks);
       console.log('Loaded!');
-      if (!localStorage.average) {
+      if (!sessionStorage.average) {
         calculateAverage(markBooks, avg => {
-          localStorage.setItem('average', avg);
-          addAverageToTable(localStorage.average);
+          sessionStorage.setItem('average', avg);
+          addAverageToTable(avg);
         });
       } else
-          addAverageToTable(localStorage.average);
+          addAverageToTable(sessionStorage.average);
     });
   } catch (e) {
     console.log(e)
