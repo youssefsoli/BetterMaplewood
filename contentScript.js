@@ -74,7 +74,7 @@ const calculateAverage = (markBooks, cb) => {
 }
 
 const addAverageToTable = avg => {
-  const tableClass = $('#TableSecondaryClasses tr:last > td').attr('class').indexOf('A') === 14 ? 'B' : 'A';
+  const tableClass = $('#TableSecondaryClasses tr:last > td').attr('class').substr(13, 1) === 'A' ? 'B' : 'A';
   $('#TableSecondaryClasses tr:last').after("<tr><td title='Average' class='mwTABLE_CELL_" + tableClass +
     "'>Average</td><td class='mwTABLE_CELL_" + tableClass + "'>" + avg + "</td></tr>");
 }
@@ -90,9 +90,10 @@ const init = () => {
       if (!localStorage.average) {
         calculateAverage(markBooks, avg => {
           localStorage.setItem('average', avg);
+          addAverageToTable(localStorage.average);
         });
-      }
-      addAverageToTable(localStorage.average);
+      } else
+          addAverageToTable(localStorage.average);
     });
   } catch (e) {
     console.log(e)
