@@ -22,7 +22,7 @@ const grabMarkBooks = markBooks => {
       } else if (!stop) {
         const className = $(this).parent().parent().children().first().text().substr(0, 3);
         let x = 1;
-        if(className === 'ELA' || className === 'MAT')
+        if (className === 'ELA' || className === 'MAT')
           x = 2;
         markBooks.push({
           classInfo: $(this).attr('onclick'),
@@ -58,10 +58,10 @@ const calculateAverage = (markBooks, cb) => {
     const termID = markbook.classInfo[2];
     const topicID = markbook.classInfo[3];
     const toPost = "{studentID: " + studentID +
-    ", classID: " + classID +
-    ", termID: " + termID +
-    ", topicID: " + topicID +
-    ", fromDate: '1/1/2000', toDate: '1/1/3000', relPath: '../../../'}";
+      ", classID: " + classID +
+      ", termID: " + termID +
+      ", topicID: " + topicID +
+      ", fromDate: '1/1/2000', toDate: '1/1/3000', relPath: '../../../'}";
     $.ajax({
       type: "POST",
       url: "../../viewer/Achieve/TopicBas/StuMrks.aspx/GetMarkbook",
@@ -74,7 +74,7 @@ const calculateAverage = (markBooks, cb) => {
         if (loc === -1)
           return;
         else {
-          if(markbook.multiplier === 2) denominator++;
+          if (markbook.multiplier === 2) denominator++;
           let tempResp = response.substr(loc);
           tempResp = tempResp.substr(0, tempResp.indexOf('<'));
           const classScore = parseFloat(tempResp.substr(11));
@@ -98,25 +98,43 @@ const addItemToTable = (item, itemName) => {
     "'>" + itemName + "</td><td class='mwTABLE_CELL_" + tableClass + "'>" + item + "</td></tr>");
 }
 
+const injectScores = () => {
+  try {
+    if (!sessionStorage.average || !sessionStorage.weightedAverage) {
+      let markBooks = [];
+      markBooks = grabMarkBooks(markBooks);
+      markBooks = cleanseValues(markBooks);
+      calculateAverage(markBooks, (weightedAverage, average) => {
+        sessionStorage.setItem('weightedAverage', weightedAverage);
+        sessionStorage.setItem('average', average);
+        addItemToTable(weightedAverage, 'Average (Weighted)');
+        addItemToTable(average, 'Average')
+      });
+    } else {
+      addItemToTable(sessionStorage.weightedAverage, 'Average (Weighted)');
+      addItemToTable(sessionStorage.average, 'Average')
+    }
+    setTimeout(pollScores, 2000);
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+const pollScores = () => {
+  if($('#TableSecondaryClasses tr:last > td:first').text() !== 'Average') {
+    injectScores();
+  }
+  else {
+    setTimeout(pollScores, 1000);
+  }
+}
+
 // Initializes the extension
 const init = () => {
   try {
-    let markBooks = [];
     waitForLoad(() => {
-      markBooks = grabMarkBooks(markBooks);
-      markBooks = cleanseValues(markBooks);
       console.log('Loaded!');
-      if (!sessionStorage.average || !sessionStorage.weightedAverage) {
-        calculateAverage(markBooks, (weightedAverage, average) => {
-          sessionStorage.setItem('weightedAverage', weightedAverage);
-          sessionStorage.setItem('average', average);
-          addItemToTable(weightedAverage, 'Average (Weighted)');
-          addItemToTable(average, 'Average')
-        });
-      } else {
-        addItemToTable(sessionStorage.weightedAverage, 'Average (Weighted)');
-        addItemToTable(sessionStorage.average, 'Average')
-      }
+      injectScores();
     });
   } catch (e) {
     console.log(e)
