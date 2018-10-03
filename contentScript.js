@@ -19,8 +19,16 @@ const grabMarkBooks = markBooks => {
       if (!$(this).attr('onclick')) {
         stop = true;
         return;
-      } else if (!stop)
-        markBooks.push($(this).attr('onclick')); // If not, add to array
+      } else if (!stop) {
+        const className = $(this).parent().parent().children().first().text().substr(0, 3);
+        let x = 1;
+        if(className === 'ELA' || className === 'MAT')
+          x = 2;
+        markBooks.push({
+          classInfo: $(this).attr('onclick'),
+          multiplier: x
+        });
+      }
     });
     return markBooks;
   } catch (e) {
@@ -31,7 +39,7 @@ const grabMarkBooks = markBooks => {
 const cleanseValues = markBooks => {
   try {
     markBooks.forEach((o, i, a) => {
-      a[i] = o.slice(13, -2).split(',');
+      a[i].classInfo = o.classInfo.slice(13, -2).split(',');
     });
     return markBooks;
   } catch (e) {
@@ -40,14 +48,20 @@ const cleanseValues = markBooks => {
 }
 
 const calculateAverage = (markBooks, cb) => {
+  let sumWeighted = 0;
   let sum = 0;
   let done = 0;
-  const studentID = markBooks[0][0];
+  let denominator = markBooks.length;
+  const studentID = markBooks[0].classInfo[0];
   markBooks.forEach((markbook) => {
-    const classID = markbook[1];
-    const termID = markbook[2];
-    const topicID = markbook[3];
-    const toPost = "{studentID: " + studentID + ", classID: " + classID + ", termID: " + termID + ", topicID: " + topicID + ", fromDate: '1/1/2000', toDate: '1/1/3000', relPath: '../../../'}";
+    const classID = markbook.classInfo[1];
+    const termID = markbook.classInfo[2];
+    const topicID = markbook.classInfo[3];
+    const toPost = "{studentID: " + studentID +
+    ", classID: " + classID +
+    ", termID: " + termID +
+    ", topicID: " + topicID +
+    ", fromDate: '1/1/2000', toDate: '1/1/3000', relPath: '../../../'}";
     $.ajax({
       type: "POST",
       url: "../../viewer/Achieve/TopicBas/StuMrks.aspx/GetMarkbook",
@@ -60,23 +74,28 @@ const calculateAverage = (markBooks, cb) => {
         if (loc === -1)
           return;
         else {
+          if(markbook.multiplier === 2) denominator++;
           let tempResp = response.substr(loc);
           tempResp = tempResp.substr(0, tempResp.indexOf('<'));
           const classScore = parseFloat(tempResp.substr(11));
+          sumWeighted += classScore * markbook.multiplier;
           sum += classScore;
           done++;
-          if (done === markBooks.length)
-            cb(Math.round(sum / markBooks.length * 100) / 100);
+          if (done === markBooks.length) {
+            const weightedAverage = Math.round(sumWeighted / denominator * 100) / 100;
+            const average = Math.round(sum / markBooks.length * 100) / 100;
+            cb(weightedAverage, average);
+          }
         }
       }
     });
   });
 }
 
-const addAverageToTable = avg => {
+const addItemToTable = (item, itemName) => {
   const tableClass = $('#TableSecondaryClasses tr:last > td').attr('class').substr(13, 1) === 'A' ? 'B' : 'A';
-  $('#TableSecondaryClasses tr:last').after("<tr><td title='Average' class='mwTABLE_CELL_" + tableClass +
-    "'>Average</td><td class='mwTABLE_CELL_" + tableClass + "'>" + avg + "</td></tr>");
+  $('#TableSecondaryClasses tr:last').after("<tr><td class='mwTABLE_CELL_" + tableClass +
+    "'>" + itemName + "</td><td class='mwTABLE_CELL_" + tableClass + "'>" + item + "</td></tr>");
 }
 
 // Initializes the extension
@@ -87,13 +106,17 @@ const init = () => {
       markBooks = grabMarkBooks(markBooks);
       markBooks = cleanseValues(markBooks);
       console.log('Loaded!');
-      if (!sessionStorage.average) {
-        calculateAverage(markBooks, avg => {
-          sessionStorage.setItem('average', avg);
-          addAverageToTable(avg);
+      if (!sessionStorage.average || !sessionStorage.weightedAverage) {
+        calculateAverage(markBooks, (weightedAverage, average) => {
+          sessionStorage.setItem('weightedAverage', weightedAverage);
+          sessionStorage.setItem('average', average);
+          addItemToTable(weightedAverage, 'Average (Weighted)');
+          addItemToTable(average, 'Average')
         });
-      } else
-          addAverageToTable(sessionStorage.average);
+      } else {
+        addItemToTable(sessionStorage.weightedAverage, 'Average (Weighted)');
+        addItemToTable(sessionStorage.average, 'Average')
+      }
     });
   } catch (e) {
     console.log(e)
