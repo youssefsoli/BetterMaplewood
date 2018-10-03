@@ -139,13 +139,14 @@ const injectScores = () => {
 
         /* Add the averages to the table */
         addItemToTable(weightedAverage, 'Average (Weighted)');
-        addItemToTable(average, 'Average')
+        addItemToTable(average, 'Average');
+        setTimeout(pollScores, 2000); // First call to pollScores since 'calculateAverage' is asynchronous
       });
     } else {
       addItemToTable(sessionStorage.weightedAverage, 'Average (Weighted)');
-      addItemToTable(sessionStorage.average, 'Average')
+      addItemToTable(sessionStorage.average, 'Average');
+      setTimeout(pollScores, 2000); // Second call to pollScores since 'calculateAverage' is asynchronous
     }
-    setTimeout(pollScores, 2000);
   } catch (e) {
     console.log(e)
   }
