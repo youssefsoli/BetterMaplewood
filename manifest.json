@@ -20,5 +20,7 @@
         "default_title": "BetterMaplewood"
     },
 
+    "icons": { "32": "images/icon.png" },
+
     "manifest_version": 2
 }
