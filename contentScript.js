@@ -24,7 +24,7 @@ const grabMarkBooks = markBooks => {
   try {
     var stop = false; // Indicates whether the function should stop adding elements
     $('a').each(function () {
-      if (!$(this).attr('onclick')) { // Once an undefined attribute is found, we know we are done with the anchors
+      if (!stop && (!$(this).attr('onclick') || $(this).attr('onclick').substr(0, 13) !== 'loadMarkbook(')) { // Once we find a non loadMarkbook value, we stop adding (we can't check for just undefined because of firefox)
         stop = true; // Stop adding
       } else if (!stop) { // If we aren't told to stop
         const className = $(this).parent().parent().children().first().text().substr(0, 3); // Holds the first 3 letters of the class
@@ -63,48 +63,57 @@ const cleanseValues = markBooks => {
  * @param {Function} cb Callback, with params (weightedAverage, average)
  */
 const calculateAverage = (markBooks, cb) => {
-  let sumWeighted = 0; // Holds the sum of the weighted
-  let sum = 0; // Holds the sum of the normal
-  let done = 0; // Hold the amount of async requests completed
-  let denominator = markBooks.length; // Holds the denominator for the weighted calculation
-  const studentID = markBooks[0].classInfo[0]; // To save proccessing, studentID is grabbed once
-  markBooks.forEach((markbook) => {
-    const classID = markbook.classInfo[1]; // Extract the classID from the second element in the markbook's info
-    const termID = markbook.classInfo[2]; // Extract the termID from the third element in the markbook's info
-    const topicID = markbook.classInfo[3]; // Extract the topicID from the fourth element in the markbook's info
-    const toPost = "{studentID: " + studentID + // Holds the message that will be sent to the server via AJAX
-      ", classID: " + classID +
-      ", termID: " + termID +
-      ", topicID: " + topicID +
-      ", fromDate: '1/1/2000', toDate: '1/1/3000', relPath: '../../../'}";
-    $.ajax({
-      type: "POST", // Post request
-      url: "../../viewer/Achieve/TopicBas/StuMrks.aspx/GetMarkbook", // File that holds markbooks
-      data: toPost, // Post data is toPost
-      contentType: "application/json; charset=utf-8", // Accept json in the utf-8 charset
-      dataType: "json", // Parse response automatically as json
-      success: response => { // Callback once it recieves a success flag (HTTP 200 OK)
-        response = response.d; // Redefine response
-        const loc = response.search("Term Mark: "); // Holds the location of the mark
-        if (loc === -1) // If term mark isn't found
-          return;
-        else {
-          if (markbook.multiplier === 2) denominator++; // If the multiplier is 2, add to the denominator
-          let tempResp = response.substr(loc); // Grab everything after and including 'Term Mark: '
-          tempResp = tempResp.substr(0, tempResp.indexOf('<')); // Grab everything from 'Term Mark: ' to the next '<'
-          const classScore = parseFloat(tempResp.substr(11)); // Grab everything after 'Term Mark: ' and parse as float
-          sumWeighted += classScore * markbook.multiplier; // Multiply class score by multiplier if weighted and add to sum
-          sum += classScore; // Add score to sum
-          done++; // Increment 'done' since Ajax request and parsing has completed
-          if (done === markBooks.length) { // If its the last to finish
-            const weightedAverage = Math.round(sumWeighted / denominator * 100) / 100; // Calculate weightedAverage
-            const average = Math.round(sum / markBooks.length * 100) / 100; // Calculate average
-            cb(weightedAverage, average); // Callback the function with new values as params
+  try {
+    let sumWeighted = 0; // Holds the sum of the weighted
+    let sum = 0; // Holds the sum of the normal
+    let done = 0; // Hold the amount of async requests completed
+    let denominator = markBooks.length; // Holds the denominator for the weighted calculation
+    const studentID = markBooks[0].classInfo[0]; // To save proccessing, studentID is grabbed once
+    /* This absolute URL method is needed since relative paths break in firefox */
+    const currentURL = new URL(window.location.href); // Parse the current location as a URL object
+    const postURL = currentURL.origin + currentURL.pathname + "/../../../viewer/Achieve/TopicBas/StuMrks.aspx/GetMarkbook"; // Segment and add the parts to a single string
+    console.log(postURL);
+    markBooks.forEach((markbook) => {
+      const classID = markbook.classInfo[1]; // Extract the classID from the second element in the markbook's info
+      const termID = markbook.classInfo[2]; // Extract the termID from the third element in the markbook's info
+      const topicID = markbook.classInfo[3]; // Extract the topicID from the fourth element in the markbook's info
+      const toPost = "{studentID: " + studentID + // Holds the message that will be sent to the server via AJAX
+        ", classID: " + classID +
+        ", termID: " + termID +
+        ", topicID: " + topicID +
+        ", fromDate: '1/1/2000', toDate: '1/1/3000', relPath: '../../../'}";
+      $.ajax({
+        type: "POST", // Post request
+        url: postURL, // File that holds markbooks
+        data: toPost, // Post data is toPost
+        contentType: "application/json; charset=utf-8", // Accept json in the utf-8 charset
+        dataType: "json", // Parse response automatically as json
+        success: response => { // Callback once it recieves a success flag (HTTP 200 OK)
+          response = response.d; // Redefine response
+          const loc = response.search("Term Mark: "); // Holds the location of the mark
+          if (loc === -1) // If term mark isn't found
+            return;
+          else {
+            if (markbook.multiplier === 2) denominator++; // If the multiplier is 2, add to the denominator
+            let tempResp = response.substr(loc); // Grab everything after and including 'Term Mark: '
+            tempResp = tempResp.substr(0, tempResp.indexOf('<')); // Grab everything from 'Term Mark: ' to the next '<'
+            const classScore = parseFloat(tempResp.substr(11)); // Grab everything after 'Term Mark: ' and parse as float
+            sumWeighted += classScore * markbook.multiplier; // Multiply class score by multiplier if weighted and add to sum
+            sum += classScore; // Add score to sum
+            done++; // Increment 'done' since Ajax request and parsing has completed
+            if (done === markBooks.length) { // If its the last to finish
+              const weightedAverage = Math.round(sumWeighted / denominator * 100) / 100; // Calculate weightedAverage
+              const average = Math.round(sum / markBooks.length * 100) / 100; // Calculate average
+              cb(weightedAverage, average); // Callback the function with new values as params
+            }
           }
-        }
-      }
+        },
+        error: e => console.log(e.statusText) // Log any ajax errors
+      });
     });
-  });
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 /**
