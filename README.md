@@ -1,5 +1,8 @@
-# BetterMaplewood
-BetterMaplewood, a browser extension to make your maplewood experience better
+<h1 align="center">
+    <img src="/img/icon196.png" 
+        height="50" width="50">
+    BetterMaplewood <h3>A browser extension to make your maplewood experience better</h3>
+</h1>
 
 # Installation
 
