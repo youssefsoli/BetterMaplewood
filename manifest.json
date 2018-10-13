@@ -1,7 +1,7 @@
 {
     "name": "BetterMaplewood",
     "description": "BetterMaplewood, a chrome extension to make your maplewood experience better",
-    "version": "1.0",
+    "version": "1.4",
 
     "permissions": [
         "activeTab"
