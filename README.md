@@ -4,6 +4,9 @@
     BetterMaplewood <h3 align="center">A browser extension to make your maplewood experience better</h3>
 </h1>
 
+# Features
+* Integrated GPA/Average calculator
+
 # Installation
 
 [![Install - Chrome](img/chrome64.png)](https://chrome.google.com/webstore/detail/bettermaplewood/baonaojcjpfdamkoenmgolcojncppifc) **Install for Chrome**
