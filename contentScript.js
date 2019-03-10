@@ -1,3 +1,10 @@
+class MarkBook {
+  constructor(name, grades) {
+    this.name = name;
+    this.grades = grades;
+  }
+}
+
 /**
  * @desc Waits for the main table to load, invokes callback once loaded
  * @param {function} cb Callback, gets called after completion
@@ -22,20 +29,19 @@ const waitForLoad = (cb) => {
  */
 const grabMarkBooks = markBooks => {
   try {
-    var stop = false; // Indicates whether the function should stop adding elements
     $('a').each(function () {
-      if (!stop && (!$(this).attr('onclick') || $(this).attr('onclick').substr(0, 13) !== 'loadMarkbook(')) { // Once we find a non loadMarkbook value, we stop adding (we can't check for just undefined because of firefox)
-        stop = true; // Stop adding
-      } else if (!stop) { // If we aren't told to stop
-        const className = $(this).parent().parent().children().first().text().substr(0, 3); // Holds the first 3 letters of the class
-        let currentMultiplier = 1; // Multiplier of current class
-        if (className === 'ELA' || className === 'MAT') // ELA and Math are both double weighted courses
-          currentMultiplier = 2; // Change weight to double
-        markBooks.push({ // Adds class to array with a multiplier and its info
-          classInfo: $(this).attr('onclick'), // Holds class information
-          multiplier: currentMultiplier // Holds multiplier/weight of class
-        });
+      if ((!$(this).attr('onclick') || $(this).attr('onclick').substr(0, 13) !== 'loadMarkbook(')) { // Once we find a non loadMarkbook value, we stop adding (we can't check for just undefined because of firefox)
+        return;
       }
+      const className = $(this).parent().parent().children().first().text(); // Holds the first 3 letters of the class
+      let currentMultiplier = 1; // Multiplier of current class
+      if (className.substr(0, 3) === 'ELA' || className.substr(0, 3) === 'MAT') // ELA and Math are both double weighted courses
+        currentMultiplier = 2; // Change weight to double
+      markBooks.push({ // Adds class to array with a multiplier and its info
+        name: className,
+        classInfo: $(this).attr('onclick'), // Holds class information
+        multiplier: currentMultiplier // Holds multiplier/weight of class
+      });
     });
   } catch (e) {
     console.log(e);
@@ -57,6 +63,16 @@ const cleanseValues = markBooks => {
   }
 }
 
+const addMarkToClassRow = (mark, className) => {
+  $("#TableSecondaryClasses tr").each(function (i, row) {
+    const $row = $(row);
+    if($row.find("td:first").text() == className) {
+      $row.find("a").parent().append(`<i>${mark}</i>`);
+      return;
+    }
+  });
+}
+
 /**
  * @desc Calculates the weighted and normal average, which are returned through the callback
  * @param {Array} markBooks Array that holds the class info and multipliers
@@ -72,7 +88,6 @@ const calculateAverage = (markBooks, cb) => {
     /* This absolute URL method is needed since relative paths break in firefox */
     const currentURL = new URL(window.location.href); // Parse the current location as a URL object
     const postURL = currentURL.origin + currentURL.pathname + "/../../../viewer/Achieve/TopicBas/StuMrks.aspx/GetMarkbook"; // Segment and add the parts to a single string
-    console.log(postURL);
     markBooks.forEach((markbook) => {
       const classID = markbook.classInfo[1]; // Extract the classID from the second element in the markbook's info
       const termID = markbook.classInfo[2]; // Extract the termID from the third element in the markbook's info
@@ -98,6 +113,7 @@ const calculateAverage = (markBooks, cb) => {
             let tempResp = response.substr(loc); // Grab everything after and including 'Term Mark: '
             tempResp = tempResp.substr(0, tempResp.indexOf('<')); // Grab everything from 'Term Mark: ' to the next '<'
             const classScore = parseFloat(tempResp.substr(11)); // Grab everything after 'Term Mark: ' and parse as float
+            addMarkToClassRow(classScore, markbook.name);
             sumWeighted += classScore * markbook.multiplier; // Multiply class score by multiplier if weighted and add to sum
             sum += classScore; // Add score to sum
             done++; // Increment 'done' since Ajax request and parsing has completed
@@ -147,11 +163,12 @@ const injectScores = () => {
         sessionStorage.setItem('average', average);
 
         /* Add the averages to the table */
-        addItemToTable(weightedAverage, 'Average (Weighted)');
-        addItemToTable(average, 'Average');
+        addItemToTable(sessionStorage.weightedAverage, 'Average (Weighted)');
+        addItemToTable(sessionStorage.average, 'Average');
         setTimeout(pollScores, 2000); // First call to pollScores since 'calculateAverage' is asynchronous
       });
     } else {
+      /* Add the averages to the table */
       addItemToTable(sessionStorage.weightedAverage, 'Average (Weighted)');
       addItemToTable(sessionStorage.average, 'Average');
       setTimeout(pollScores, 2000); // Second call to pollScores since 'calculateAverage' is asynchronous
@@ -178,7 +195,6 @@ const pollScores = () => {
 const init = () => {
   try {
     waitForLoad(() => { // Make anonymous function to be called once 'waitForLoad' is finished
-      console.log('Loaded!'); // Verify plugin successfully loaded
       injectScores(); // Call the injection function
     });
   } catch (e) {
