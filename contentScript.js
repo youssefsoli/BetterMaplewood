@@ -63,10 +63,18 @@ const cleanseValues = markBooks => {
   }
 }
 
+const addMarksToClassRows = courseMarks => {
+  for (var courseName in courseMarks) {
+    if (courseMarks.hasOwnProperty(courseName)) {
+      addMarkToClassRow(courseMarks[courseName], courseName);
+    }
+  }
+}
+
 const addMarkToClassRow = (mark, className) => {
   $("#TableSecondaryClasses tr").each(function (i, row) {
     const $row = $(row);
-    if($row.find("td:first").text() == className) {
+    if ($row.find("td:first").text() == className) {
       $row.find("a").parent().append(`<i>${mark}</i>`);
       return;
     }
@@ -80,6 +88,7 @@ const addMarkToClassRow = (mark, className) => {
  */
 const calculateAverage = (markBooks, cb) => {
   try {
+    let courseGrades = {};
     let sumWeighted = 0; // Holds the sum of the weighted
     let sum = 0; // Holds the sum of the normal
     let done = 0; // Hold the amount of async requests completed
@@ -113,14 +122,14 @@ const calculateAverage = (markBooks, cb) => {
             let tempResp = response.substr(loc); // Grab everything after and including 'Term Mark: '
             tempResp = tempResp.substr(0, tempResp.indexOf('<')); // Grab everything from 'Term Mark: ' to the next '<'
             const classScore = parseFloat(tempResp.substr(11)); // Grab everything after 'Term Mark: ' and parse as float
-            addMarkToClassRow(classScore, markbook.name);
+            courseGrades[markbook.name] = classScore;
             sumWeighted += classScore * markbook.multiplier; // Multiply class score by multiplier if weighted and add to sum
             sum += classScore; // Add score to sum
             done++; // Increment 'done' since Ajax request and parsing has completed
             if (done === markBooks.length) { // If its the last to finish
               const weightedAverage = Math.round(sumWeighted / denominator * 100) / 100; // Calculate weightedAverage
               const average = Math.round(sum / markBooks.length * 100) / 100; // Calculate average
-              cb(weightedAverage, average); // Callback the function with new values as params
+              cb(weightedAverage, average, courseGrades); // Callback the function with new values as params
             }
           }
         },
@@ -157,20 +166,23 @@ const injectScores = () => {
       let markBooks = [];
       grabMarkBooks(markBooks); // Grab the markbooks
       cleanseValues(markBooks); // Parse the markbooks
-      calculateAverage(markBooks, (weightedAverage, average) => { // Calculate averages of markbooks
+      calculateAverage(markBooks, (weightedAverage, average, courseGrades) => { // Calculate averages of markbooks
         /* Add the averages to sessionStorage which is active as long as window is open */
         sessionStorage.setItem('weightedAverage', weightedAverage);
         sessionStorage.setItem('average', average);
+        sessionStorage.setItem('courseGrades', JSON.stringify(courseGrades));
 
         /* Add the averages to the table */
         addItemToTable(sessionStorage.weightedAverage, 'Average (Weighted)');
         addItemToTable(sessionStorage.average, 'Average');
+        addMarksToClassRows(JSON.parse(sessionStorage.courseGrades));
         setTimeout(pollScores, 2000); // First call to pollScores since 'calculateAverage' is asynchronous
       });
     } else {
       /* Add the averages to the table */
       addItemToTable(sessionStorage.weightedAverage, 'Average (Weighted)');
       addItemToTable(sessionStorage.average, 'Average');
+      addMarksToClassRows(JSON.parse(sessionStorage.courseGrades));
       setTimeout(pollScores, 2000); // Second call to pollScores since 'calculateAverage' is asynchronous
     }
   } catch (e) {
