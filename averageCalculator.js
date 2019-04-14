@@ -1,10 +1,3 @@
-class MarkBook {
-  constructor(name, grades) {
-    this.name = name;
-    this.grades = grades;
-  }
-}
-
 /**
  * @desc Waits for the main table to load, invokes callback once loaded
  * @param {function} cb Callback, gets called after completion
@@ -63,20 +56,29 @@ const cleanseValues = markBooks => {
   }
 }
 
+/**
+ * @desc Loops through courseMarks and sends them to addMarkToClassRow
+ * @param {Object} courseMarks Holds key value pairs of className:classScore
+ */
 const addMarksToClassRows = courseMarks => {
-  for (var courseName in courseMarks) {
-    if (courseMarks.hasOwnProperty(courseName)) {
-      addMarkToClassRow(courseMarks[courseName], courseName);
+  for (var courseName in courseMarks) { // Loops each courseName in the courseMarks JSON Object
+    if (courseMarks.hasOwnProperty(courseName)) { // Checks if the courseName is in courseMarks
+      addMarkToClassRow(courseMarks[courseName], courseName); // Passes the mark and courseName to addMarkToClassRow
     }
   }
 }
 
+/**
+ * @desc Adds the grade/mark to the respective class in the table
+ * @param {String} mark Holds the mark of the given class
+ * @param {String} className The name of the class with the given mark
+ */
 const addMarkToClassRow = (mark, className) => {
-  $("#TableSecondaryClasses tr").each(function (i, row) {
-    const $row = $(row);
-    if ($row.find("td:first").text() == className) {
-      $row.find("a").parent().append(`<i>${mark}</i>`);
-      return;
+  $("#TableSecondaryClasses tr").each(function (i, row) { // Loops through each table row
+    const $row = $(row); // Get the jQuery object of the row
+    if ($row.find("td:first").text() == className) {  // Check if the current row is the class we are looking for
+      $row.find("a").parent().append(`<i>${mark}</i>`); // Append the mark if the class is found
+      return; // Stop the loop and exit the function
     }
   });
 }
