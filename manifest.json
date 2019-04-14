@@ -10,7 +10,7 @@
       "content_scripts": [
         {
           "matches": ["*://hosting.maplewood.com/*/main.aspx*"],
-          "js": ["3rdparty/jquery.min.js","contentScript.js"],
+          "js": ["3rdparty/jquery.min.js","averageCalculator.js", "liveMarkbookCalculator.js"],
           "run_at": "document_end",
           "all_frames": true
         }
