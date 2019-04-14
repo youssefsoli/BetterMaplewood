@@ -94,7 +94,8 @@ const calculateAverage = (markBooks, cb) => {
     let sumWeighted = 0; // Holds the sum of the weighted
     let sum = 0; // Holds the sum of the normal
     let done = 0; // Hold the amount of async requests completed
-    let denominator = markBooks.length; // Holds the denominator for the weighted calculation
+    let denominator = markBooks.length; // Holds the denominator for the non-weighted calculation
+    let weightedDenominator = markBooks.length; // Holds the denominator for the weighted calculation
     const studentID = markBooks[0].classInfo[0]; // To save proccessing, studentID is grabbed once
     /* This absolute URL method is needed since relative paths break in firefox */
     const currentURL = new URL(window.location.href); // Parse the current location as a URL object
@@ -120,17 +121,22 @@ const calculateAverage = (markBooks, cb) => {
           if (loc === -1) // If term mark isn't found
             return;
           else {
-            if (markbook.multiplier === 2) denominator++; // If the multiplier is 2, add to the denominator
+            if (markbook.multiplier === 2) weightedDenominator++; // If the multiplier is 2, add to the denominator
             let tempResp = response.substr(loc); // Grab everything after and including 'Term Mark: '
             tempResp = tempResp.substr(0, tempResp.indexOf('<')); // Grab everything from 'Term Mark: ' to the next '<'
             const classScore = parseFloat(tempResp.substr(11)); // Grab everything after 'Term Mark: ' and parse as float
-            courseGrades[markbook.name] = classScore;
-            sumWeighted += classScore * markbook.multiplier; // Multiply class score by multiplier if weighted and add to sum
-            sum += classScore; // Add score to sum
+            if(!classScore) { // If the class does not have a valid score, remove it from the calculation
+              weightedDenominator -= markbook.multiplier;
+              denominator--;
+            } else {
+              courseGrades[markbook.name] = classScore;
+              sumWeighted += classScore * markbook.multiplier; // Multiply class score by multiplier if weighted and add to sum
+              sum += classScore; // Add score to sum
+            }
             done++; // Increment 'done' since Ajax request and parsing has completed
             if (done === markBooks.length) { // If its the last to finish
-              const weightedAverage = Math.round(sumWeighted / denominator * 100) / 100; // Calculate weightedAverage
-              const average = Math.round(sum / markBooks.length * 100) / 100; // Calculate average
+              const weightedAverage = Math.round(sumWeighted / weightedDenominator * 100) / 100; // Calculate weightedAverage
+              const average = Math.round(sum / denominator * 100) / 100; // Calculate average
               cb(weightedAverage, average, courseGrades); // Callback the function with new values as params
             }
           }
@@ -204,7 +210,7 @@ const pollScores = () => {
 }
 
 /**
- * @desc Main function, initializes the whole extension
+ * @desc Main function, initializes the average calculation feature
  */
 const init = () => {
   try {
