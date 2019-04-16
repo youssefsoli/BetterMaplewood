@@ -1,9 +1,18 @@
- const loadPatchedMarkbook = event => {
-    studentID = event.data[0];
-    classID = event.data[1];
-    termID = event.data[2];
-    topicID = event.data[3];
-    title = event.data[4];
+loadMarkbook = function(studentID, classID, termID, topicID, title, refresh) {
+
+    if (refresh) {
+        studentID = studentID_;
+        classID = classID_;
+        topicID = topicID_;
+        termID = termID_;
+        title = title_;
+    } else {
+        studentID_ = studentID;
+        classID_ = classID;
+        topicID_ = topicID;
+        title_ = title;
+        termID_ = termID;
+    }
 
     $("#MarkbookDialog").dialog("option", "title", title);
     $("#markbookTable").html('<div><img alt="Loading...." src="' + mwMrkBookDialogRootPath + 'viewer/clsmgr/images/ajax-loader2.gif" />&nbsp;Loading...</div>');
@@ -36,15 +45,3 @@
     });
 
 }
-
-$('table a[onclick]').not(':last').each(function () {
-    const markbookData = $(this).attr('onclick').slice(13, -2).split(',');
-    $(this).removeAttr('onclick');
-    $(this).bind('click', [
-        markbookData[0],
-        markbookData[1],
-        markbookData[2],
-        markbookData[3],
-        markbookData[4]
-    ], loadPatchedMarkbook);
-});
