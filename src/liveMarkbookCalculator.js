@@ -1,4 +1,52 @@
-loadMarkbook = function(studentID, classID, termID, topicID, title, refresh) {
+class Markbook {
+    constructor(className) {
+        this.className = className;
+        this.categories = [];
+    }
+
+    addCategory(category) {
+        this.categories.push(category);
+    }
+
+    getCategory(categoryName) {
+
+    }
+
+    update() {
+        /* Refresh markbook */
+    }
+}
+
+class Category {
+    constructor(categoryName) {
+
+    }
+}
+
+let markbooks = [];
+
+const calculateMark = mark => {
+
+    console.log(mark.attr('style'));
+}
+
+const makeMarkbookEditable = () => {
+    $('#markbookTable table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;} input[type="number"] {-moz-appearance: textfield;}</style>');
+    $('#markbookTable table tbody td:nth-child(2)').each(function () {
+        if($(this).css('background-color') === 'rgb(253, 253, 251)') {
+            const mark = $(this).text();
+            const css = '-webkit-appearance: none; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: none; text-align: center; width: 30pt;';
+            $(this).html(`<input style="${css}" min="0" type="number" value="${mark}" />`);
+            const input = $(this).children('input');
+            $(input).bind('input', function() {
+                calculateMark($(this));
+            });
+        }
+    });
+}
+
+/* Load Markbook Override */
+loadMarkbook = function (studentID, classID, termID, topicID, title, refresh) {
 
     if (refresh) {
         studentID = studentID_;
@@ -21,10 +69,8 @@ loadMarkbook = function(studentID, classID, termID, topicID, title, refresh) {
     var fromDate = '';
     var toDate = '';
 
-    fromDate = $("#mrkbkFromDate").datepicker("getDate");
-    toDate = $("#mrkbkToDate").datepicker("getDate");
-    if (fromDate) fromDate = (fromDate.getMonth() + 1).toString() + "/" + fromDate.getDate().toString() + "/" + fromDate.getFullYear().toString(); else fromDate = "";
-    if (toDate) toDate = (toDate.getMonth() + 1).toString() + "/" + toDate.getDate().toString() + "/" + toDate.getFullYear().toString(); else fromDate = "";
+    fromDate = $("#mrkbkFromDate").datepicker().val();
+    toDate = $("#mrkbkToDate").datepicker().val();
 
     $.ajax({
         type: "POST",
@@ -37,11 +83,11 @@ loadMarkbook = function(studentID, classID, termID, topicID, title, refresh) {
             $("#markbookTable").html(msg.d);
             $("#MarkbookDialog").dialog("option", "height", "auto").dialog("open");
             $("#markbookTable td[mrkTble!='1']").addClass("tdAchievement");
+            makeMarkbookEditable();
         },
         error: function (e) {
             $("#markbookTable").html("(error loading marbook)");
             $("#MarkbookDialog").dialog("option", "height", "auto").dialog("open");
         }
     });
-
 }
