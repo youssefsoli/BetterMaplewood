@@ -4,7 +4,8 @@
     "version": "1.4",
 
     "permissions": [
-        "activeTab"
+        "activeTab",
+        "storage"
       ],
 
       "content_scripts": [
@@ -22,7 +23,8 @@
     ],
 
     "browser_action": {
-        "default_title": "BetterMaplewood"
+        "default_title": "BetterMaplewood",
+        "default_popup": "src/popup.html"
     },
 
     "icons": {
