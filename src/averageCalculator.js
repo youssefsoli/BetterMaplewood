@@ -73,7 +73,7 @@ const addMarksToClassRows = courseMarks => {
 const addMarkToClassRow = (mark, className) => {
   $("#TableSecondaryClasses tr").each(function (i, row) { // Loops through each table row
     const $row = $(row); // Get the jQuery object of the row
-    if ($row.find("td:first").text() == className) {  // Check if the current row is the class we are looking for
+    if ($row.find("td:first").text() == className) { // Check if the current row is the class we are looking for
       $row.find("a").parent().append(`<i>${mark}</i>`); // Append the mark if the class is found
       return; // Stop the loop and exit the function
     }
@@ -122,7 +122,7 @@ const calculateAverage = (markBooks, cb) => {
             let tempResp = response.substr(loc); // Grab everything after and including 'Term Mark: '
             tempResp = tempResp.substr(0, tempResp.indexOf('<')); // Grab everything from 'Term Mark: ' to the next '<'
             const classScore = parseFloat(tempResp.substr(11)); // Grab everything after 'Term Mark: ' and parse as float
-            if(!classScore) { // If the class does not have a valid score, remove it from the calculation
+            if (!classScore) { // If the class does not have a valid score, remove it from the calculation
               weightedDenominator -= markbook.multiplier;
               denominator--;
             } else {
@@ -178,17 +178,23 @@ const injectScores = () => {
         sessionStorage.setItem('courseGrades', JSON.stringify(courseGrades));
 
         /* Add the averages to the table */
-        addItemToTable(sessionStorage.weightedAverage, 'Average (Weighted)');
-        addItemToTable(sessionStorage.average, 'Average');
-        addMarksToClassRows(JSON.parse(sessionStorage.courseGrades));
-        setTimeout(pollScores, 2000); // First call to pollScores since 'calculateAverage' is asynchronous
+        if (window.settings.calculation) {
+          addItemToTable(sessionStorage.weightedAverage, 'Average (Weighted)');
+          addItemToTable(sessionStorage.average, 'Average');
+          setTimeout(pollScores, 2000); // First call to pollScores since 'calculateAverage' is asynchronous
+        }
+        if (window.settings.quickview)
+          addMarksToClassRows(JSON.parse(sessionStorage.courseGrades));
       });
     } else {
       /* Add the averages to the table */
-      addItemToTable(sessionStorage.weightedAverage, 'Average (Weighted)');
-      addItemToTable(sessionStorage.average, 'Average');
-      addMarksToClassRows(JSON.parse(sessionStorage.courseGrades));
-      setTimeout(pollScores, 2000); // Second call to pollScores since 'calculateAverage' is asynchronous
+      if (window.settings.calculation) {
+        addItemToTable(sessionStorage.weightedAverage, 'Average (Weighted)');
+        addItemToTable(sessionStorage.average, 'Average');
+        setTimeout(pollScores, 2000); // Second call to pollScores since 'calculateAverage' is asynchronous
+      }
+      if (window.settings.quickview)
+        addMarksToClassRows(JSON.parse(sessionStorage.courseGrades));
     }
   } catch (e) {
     console.log(e)
