@@ -4,12 +4,14 @@
     <title>BetterMaplewood</title>
     <style>
         .title {
-            display: inline;
+            display: block;
             color: #424242;
+            text-align: center;
+            margin-top: 0;
         }
 
         .center {
-            display: inline;
+            display: flex;
             margin-left: auto;
             margin-right: auto;
         }
@@ -17,7 +19,7 @@
 </head>
 
 <body style="width: 250;">
-    <div>
+    <div style="margin-bottom: 10;">
         <img class="center" src="../img/icon32.png">
         <h3 class="title">BetterMaplewood</h3>
     </div>
@@ -33,7 +35,7 @@
         <span style="text-align: center;"><input type="checkbox" id="liveModification" checked data-toggle="toggle"
                 data-size="mini">Enable live mark modification</span>
     </div>
-    <div style="text-align: center;">Created with ❤ by Youssef Soliman</div>
+    <div style="text-align: center;margin-top: 15;">Created with ❤️ by Youssef Soliman</div>
     <script src="popup.js"></script>
 </body>
 
