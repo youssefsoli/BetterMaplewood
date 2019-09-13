@@ -26,22 +26,19 @@ class Category {
 let markbooks = [];
 
 const calculateMark = mark => {
-
     console.log(mark.attr('style'));
 }
 
 const makeMarkbookEditable = () => {
     $('#markbookTable table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;} input[type="number"] {-moz-appearance: textfield;}</style>');
     $('#markbookTable table tbody td:nth-child(2)').each(function () {
-        if($(this).css('background-color') === 'rgb(253, 253, 251)') {
             const mark = $(this).text();
-            const css = '-webkit-appearance: none; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: none; text-align: center; width: 30pt;';
+            const css = 'margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0px; text-align: center; width: 30pt; background-color: inherit;';
             $(this).html(`<input style="${css}" min="0" type="number" value="${mark}" />`);
             const input = $(this).children('input');
             $(input).bind('input', function() {
                 calculateMark($(this));
             });
-        }
     });
 }
 
