@@ -174,7 +174,7 @@ const addColumnAfter = (i, name) => {
  */
 const injectScores = () => {
   try {
-    addMarkCol(1, 'Current Mark'); // Add the column to hold the marks
+    addColumnAfter(1, 'Current Mark'); // Add the column to hold the marks
     if (!sessionStorage.average || !sessionStorage.weightedAverage) { // If one does not exist, refetch the values
       let markBooks = [];
       grabMarkBooks(markBooks); // Grab the markbooks
