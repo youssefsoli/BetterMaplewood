@@ -74,7 +74,7 @@ const addMarkToClassRow = (mark, className) => {
   $("#TableSecondaryClasses tr").each(function (i, row) { // Loops through each table row
     const $row = $(row); // Get the jQuery object of the row
     if ($row.find("td:first").text() == className) { // Check if the current row is the class we are looking for
-      $row.find("a").parent().append(`<i>${mark}</i>`); // Append the mark if the class is found
+      $row.find("td:nth-child(2)").html(`${mark}`); // Append the mark if the class is found
       return; // Stop the loop and exit the function
     }
   });
@@ -162,11 +162,19 @@ const addItemToTable = (item, itemName) => {
     "'>" + itemName + "</td><td class='mwTABLE_CELL_" + tableClass + "'>" + item + "</td></tr>");
 }
 
+const addColumnAfter = (i, name) => {
+  $(`#TableSecondaryClasses tr:first td:nth-child(${i}):first`).after(`<td class="mwTABLE_CELL_HEADER" align="center" rowspan="2">${name}</td>`);
+  $(`#TableSecondaryClasses tr > td:not(.mwTABLE_CELL_HEADER):nth-child(${i})`).each(function () {
+    $(this).after($(this).clone().empty());
+  });
+}
+
 /**
  * @desc Parses the injection of averages
  */
 const injectScores = () => {
   try {
+    addMarkCol(1, 'Current Mark'); // Add the column to hold the marks
     if (!sessionStorage.average || !sessionStorage.weightedAverage) { // If one does not exist, refetch the values
       let markBooks = [];
       grabMarkBooks(markBooks); // Grab the markbooks
