@@ -54,10 +54,35 @@ const cleanseValues = markBooks => {
 }
 
 /**
+ * @desc Appends a column after a specified column index
+ * @param {Number} i Index of column to append to
+ * @param {String} name Name to give the column header
+ */
+const addColumnAfter = (i, name) => {
+  $(`#TableSecondaryClasses tr:first td:nth-child(${i}):first`).after(`<td class="mwTABLE_CELL_HEADER" align="center" rowspan="2">${name}</td>`);
+  $(`#TableSecondaryClasses tr > td:not(.mwTABLE_CELL_HEADER):nth-child(${i})`).each(function () {
+    $(this).after($(this).clone().empty());
+  });
+}
+
+/**
+ * @desc Prepends a column before a specified column index
+ * @param {Number} i Index of column to prepend to
+ * @param {String} name Name to give the column header
+ */
+const addColumnBefore = (i, name) => {
+  $(`#TableSecondaryClasses tr:first td:nth-child(${i}):first`).before(`<td class="mwTABLE_CELL_HEADER" align="center" rowspan="2">${name}</td>`);
+  $(`#TableSecondaryClasses tr > td:not(.mwTABLE_CELL_HEADER):nth-child(${i})`).each(function () {
+    $(this).before($(this).clone().empty());
+  });
+}
+
+/**
  * @desc Loops through courseMarks and sends them to addMarkToClassRow
  * @param {Object} courseMarks Holds key value pairs of className:classScore
  */
 const addMarksToClassRows = courseMarks => {
+  addColumnAfter(1, 'Current Mark'); // Add the column to hold the marks
   for (var courseName in courseMarks) { // Loops each courseName in the courseMarks JSON Object
     if (courseMarks.hasOwnProperty(courseName)) { // Checks if the courseName is in courseMarks
       addMarkToClassRow(courseMarks[courseName], courseName); // Passes the mark and courseName to addMarkToClassRow
@@ -162,19 +187,11 @@ const addItemToTable = (item, itemName) => {
     "'>" + itemName + "</td><td class='mwTABLE_CELL_" + tableClass + "'>" + item + "</td></tr>");
 }
 
-const addColumnAfter = (i, name) => {
-  $(`#TableSecondaryClasses tr:first td:nth-child(${i}):first`).after(`<td class="mwTABLE_CELL_HEADER" align="center" rowspan="2">${name}</td>`);
-  $(`#TableSecondaryClasses tr > td:not(.mwTABLE_CELL_HEADER):nth-child(${i})`).each(function () {
-    $(this).after($(this).clone().empty());
-  });
-}
-
 /**
  * @desc Parses the injection of averages
  */
 const injectScores = () => {
   try {
-    addColumnAfter(1, 'Current Mark'); // Add the column to hold the marks
     if (!sessionStorage.average || !sessionStorage.weightedAverage) { // If one does not exist, refetch the values
       let markBooks = [];
       grabMarkBooks(markBooks); // Grab the markbooks
