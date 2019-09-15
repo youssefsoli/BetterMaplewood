@@ -192,7 +192,8 @@ const addItemToTable = (item, itemName) => {
 const injectScores = () => {
   try {
     addColumnAfter(1, 'Current Mark', '<span style="color:LightGrey;">n.a.</span'); // Add the column to hold the marks
-    addColumnAfter(2, 'Weight', '<input style="margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0px; text-align: center; width: 30pt; background-color: inherit;" min="0" type="number" value="5">')
+    addColumnAfter(2, 'Weight', '<input min="0" type="number" value="5">')
+    $('#TableSecondaryClasses table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;} input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0px; text-align: center; width: 30pt; background-color: inherit;}</style>');
     if (!sessionStorage.average || !sessionStorage.weightedAverage || !sessionStorage.courseGrades) { // If one does not exist, refetch the values
       let markBooks = [];
       grabMarkBooks(markBooks); // Grab the markbooks

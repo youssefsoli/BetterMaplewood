@@ -30,17 +30,16 @@ const calculateMark = mark => {
 }
 
 const makeMarkbookEditable = () => {
-    $('#markbookTable table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;} input[type="number"] {-moz-appearance: textfield;}</style>');
+    $('#markbookTable table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;} input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0px; text-align: center; width: 30pt; background-color: inherit;}</style>');
     $('#markbookTable table tbody td:nth-child(2)').each(function () {
-            const mark = $(this).text();
-            if(!parseFloat(mark) && mark !== '')
-                return;
-            const css = 'margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0px; text-align: center; width: 30pt; background-color: inherit;';
-            $(this).html(`<input style="${css}" min="0" type="number" value="${mark}" />`);
-            const input = $(this).children('input');
-            $(input).bind('input', function() {
-                calculateMark($(this));
-            });
+        const mark = $(this).text();
+        if (!parseFloat(mark) && mark !== '')
+            return;
+        $(this).html(`<input min="0" type="number" value="${mark}" />`);
+        const input = $(this).children('input');
+        $(input).bind('input', function () {
+            calculateMark($(this));
+        });
     });
 }
 
