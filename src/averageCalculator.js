@@ -58,10 +58,10 @@ const cleanseValues = markBooks => {
  * @param {Number} i Index of column to append to
  * @param {String} name Name to give the column header
  */
-const addColumnAfter = (i, name) => {
+const addColumnAfter = (i, name, html) => {
   $(`#TableSecondaryClasses tr:first td:nth-child(${i}):first`).after(`<td class="mwTABLE_CELL_HEADER" align="center" rowspan="2">${name}</td>`);
-  $(`#TableSecondaryClasses tr > td:not(.mwTABLE_CELL_HEADER):nth-child(${i})`).each(function () {
-    $(this).after($(this).clone().empty());
+  $(`#TableSecondaryClasses > tbody > tr > td:not(.mwTABLE_CELL_HEADER):nth-child(${i})`).each(function () {
+    $(this).after($(this).clone().html(html));
   });
 }
 
@@ -70,10 +70,10 @@ const addColumnAfter = (i, name) => {
  * @param {Number} i Index of column to prepend to
  * @param {String} name Name to give the column header
  */
-const addColumnBefore = (i, name) => {
+const addColumnBefore = (i, name, html) => {
   $(`#TableSecondaryClasses tr:first td:nth-child(${i}):first`).before(`<td class="mwTABLE_CELL_HEADER" align="center" rowspan="2">${name}</td>`);
-  $(`#TableSecondaryClasses tr > td:not(.mwTABLE_CELL_HEADER):nth-child(${i})`).each(function () {
-    $(this).before($(this).clone().empty());
+  $(`#TableSecondaryClasses > tbody > tr > td:not(.mwTABLE_CELL_HEADER):nth-child(${i})`).each(function () {
+    $(this).before($(this).clone().html(html));
   });
 }
 
@@ -82,7 +82,6 @@ const addColumnBefore = (i, name) => {
  * @param {Object} courseMarks Holds key value pairs of className:classScore
  */
 const addMarksToClassRows = courseMarks => {
-  addColumnAfter(1, 'Current Mark'); // Add the column to hold the marks
   for (var courseName in courseMarks) { // Loops each courseName in the courseMarks JSON Object
     if (courseMarks.hasOwnProperty(courseName)) { // Checks if the courseName is in courseMarks
       addMarkToClassRow(courseMarks[courseName], courseName); // Passes the mark and courseName to addMarkToClassRow
@@ -192,7 +191,9 @@ const addItemToTable = (item, itemName) => {
  */
 const injectScores = () => {
   try {
-    if (!sessionStorage.average || !sessionStorage.weightedAverage) { // If one does not exist, refetch the values
+    addColumnAfter(1, 'Current Mark', '<span style="color:LightGrey;">n.a.</span'); // Add the column to hold the marks
+    addColumnAfter(2, 'Weight', '<input style="margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0px; text-align: center; width: 30pt; background-color: inherit;" min="0" type="number" value="5">')
+    if (!sessionStorage.average || !sessionStorage.weightedAverage || !sessionStorage.courseGrades) { // If one does not exist, refetch the values
       let markBooks = [];
       grabMarkBooks(markBooks); // Grab the markbooks
       cleanseValues(markBooks); // Parse the markbooks
