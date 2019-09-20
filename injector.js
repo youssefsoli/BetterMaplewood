@@ -19,19 +19,10 @@ const injectScript = name => {
     };
 }
 
-const injectSettings = settings => {
-    let script = document.createElement('script'); // Create a script element
-    script.innerHTML = `window.settings = ${JSON.stringify(settings)}`; // Set the value of the settings
-    (document.head || document.documentElement).appendChild(script); // Append the script to the document
-    // script.onload = () => {
-    //     script.parentNode.removeChild(script); // Script removes itself off the page once loaded
-    // };
-}
-
 const injectScriptList = scriptList => {
     chrome.storage.sync.get(null, settings => {
 
-        injectSettings(settings); // Give the DOM access to settings
+        chrome.devtools.inspectedWindow.eval(`window.settings = ${JSON.stringify(settings)};`); // Set the value of the settings // Give the DOM access to settings
 
         if (!settings.calculation && !settings.quickview)
             scriptList.calculation.enabled = false; // Disable the script from loading
