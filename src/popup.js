@@ -35,7 +35,7 @@ chrome.storage.sync.get(null, (settings) => {
     } else { // Enable all functional settings if it hasn't been set yet
         quickview.checked = true;
         calculation.checked = true;
-        liveModification.checked = false;
+        liveModification.checked = false; // Since it is still WIP
         updateSettings();
     }
 });
