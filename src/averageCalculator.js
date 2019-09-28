@@ -101,6 +101,9 @@ const addMarkToClassRow = (mark, className) => {
   });
 }
 
+/**
+ * @desc Calculates and updates the averages on the page
+ */
 const calculateAverage = () => {
   let totalGrades = 0;
   let totalWeightedGrades = 0;
@@ -132,6 +135,9 @@ const calculateAverage = () => {
   $('#weightedAvg').text(weightedAverage);
 }
 
+/**
+ * @desc Sets the initial values for the weights when the page is fresh
+ */
 const setWeights = () => {
   try {
     if (localStorage.weights) {
@@ -169,6 +175,9 @@ const setWeights = () => {
   }
 }
 
+/**
+ * @desc Updates the values of the weights in local storage when a change is detected
+ */
 const updateWeights = () => {
   const weights = [];
   let markBooks = JSON.parse(sessionStorage.markBooks);
