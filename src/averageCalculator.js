@@ -29,7 +29,7 @@ const grabMarkBooks = markBooks => {
       markBooks.push({ // Adds class to array with a multiplier and its info
         name: className,
         classInfo: $(this).attr('onclick'), // Holds class information
-        multiplier: parseInt(multiplier) // Holds multiplier/weight of class
+        multiplier: parseFloat(multiplier) // Holds multiplier/weight of class
       });
     });
   } catch (e) {
@@ -113,7 +113,7 @@ const calculateAverage = () => {
   let markBooks = JSON.parse(sessionStorage.markBooks);
 
   markBooks.forEach(function (markbook) {
-    if (isNaN(parseInt(markbook.multiplier)) || markbook.multiplier <= 0) // If the class is given a <= 0 or no weighting
+    if (isNaN(parseFloat(markbook.multiplier)) || markbook.multiplier <= 0) // If the class is given a <= 0 or no weighting
       return;
 
     if (isNaN(parseFloat(markbook.grade))) // If the class has no grade
@@ -164,7 +164,7 @@ const setWeights = () => {
 
         weights.push({
           name: name,
-          weight: parseInt(weight)
+          weight: parseFloat(weight)
         });
       });
 
@@ -192,7 +192,7 @@ const updateWeights = () => {
 
     weights.push({
       name: name,
-      weight: parseInt(weight)
+      weight: parseFloat(weight)
     });
   });
 
