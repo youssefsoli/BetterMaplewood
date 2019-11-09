@@ -283,7 +283,7 @@ const addItemToTable = (item, itemName, id) => {
 const injectScores = async () => {
   try {
     addColumnAfter(1, 'Current Mark', '<span style="color:LightGrey;">n.a.</span'); // Add the column to hold the marks
-    addColumnAfter(2, 'Weight', '<input min="0" onchange="updateWeights()" type="number" value="5" step="any">') // Add the column to hold the modifiable weights
+    addColumnAfter(2, 'Weight', '<input min="0" oninput="updateWeights()" type="number" value="5" step="any">') // Add the column to hold the modifiable weights
     setWeights(); // Sets the weightings based on localStorage
 
     /* Inject css for the inputs */
