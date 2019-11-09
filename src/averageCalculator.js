@@ -283,7 +283,7 @@ const addItemToTable = (item, itemName, id) => {
 const injectScores = async () => {
   try {
     addColumnAfter(1, 'Current Mark', '<span style="color:LightGrey;">n.a.</span'); // Add the column to hold the marks
-    addColumnAfter(2, 'Weight', '<input min="0" onchange="updateWeights()" type="number" value="5">') // Add the column to hold the modifiable weights
+    addColumnAfter(2, 'Weight', '<input min="0" onchange="updateWeights()" type="number" value="5" step="any">') // Add the column to hold the modifiable weights
     setWeights(); // Sets the weightings based on localStorage
 
     /* Inject css for the inputs */
@@ -312,6 +312,20 @@ const injectScores = async () => {
 }
 
 /**
+ * @desc Disables the enter key from submitting the form
+ */
+const disableEnter = () => {
+  $(document).ready(() => {
+    $(window).keydown(event => {
+      if (event.keyCode == 13) {
+        event.preventDefault();
+        return false;
+      }
+    });
+  });
+}
+
+/**
  * @desc Polls the page to see if the average rows have been removed
  */
 const pollScores = () => {
@@ -327,6 +341,7 @@ const pollScores = () => {
  */
 const init = () => {
   try {
+    disableEnter(); // Disable the enter key to prevent unwanted form submission
     waitForLoad(() => { // Make anonymous function to be called once 'waitForLoad' is finished
       injectScores(); // Call the injection function
     });
