@@ -1,38 +1,55 @@
-let markbooks = [];
-const level1 = 'rgb(240, 255, 240)';
-const level2 = 'rgb(248, 255, 248)';
-const level3 = 'rgb(253, 253, 251)';
+let markbook;
 
 const calculateMark = mark => {
     console.log(mark.attr('style'));
 }
 
 const parseMarkbook = () => {
-    let topLevel = 0;
-    let curLevel = 0;
+    markbook = [];
+    $('#markbookTable table tbody > tr:gt(0)').each(function () { // Loop through each row except the first
+        const row = $(this);
+        const margin = row.find("td:first > span:first")[0].style["margin-left"];
 
-    $('#markbookTable table tbody > tr').each(function () {
-        const markLevel = $(this).children().css("background-color");
+        switch (margin) {
+            case "0px": {
+                markbook.push({
+                    mark: row.find("td:nth-child(2)").text(),
+                    weight: row.find("td:nth-child(4)").text(),
+                    denominator: row.find("td:nth-child(5)").text(),
+                    children: []
+                });
+                break;
+            }
+            case "20px": {
+                markbook[markbook.length - 1].children.push({ // Push a middle row into the latest top level
+                    mark: row.find("td:nth-child(2)").text(),
+                    weight: row.find("td:nth-child(4)").text(),
+                    denominator: row.find("td:nth-child(5)").text(),
+                    children: []
+                });
+                break;
+            }
+            case "40px": {
+                let top = markbook[markbook.length - 1].children;
+                let middle = !top[top.length - 1] ? top : top[top.length - 1].children;
 
-        switch (markLevel) {
-            case level1:
-                curLevel = 1;
+                if (!middle) {
+                    middle = top;
+                }
+
+                middle.push({
+                    mark: row.find("td:nth-child(2)").text(),
+                    weight: row.find("td:nth-child(4)").text(),
+                    denominator: row.find("td:nth-child(5)").text()
+                });
                 break;
-            case level2:
-                curLevel = 2;
-                break;
-            case level3:
-                curLevel = 3;
-                break;
-            default:
-                curLevel = 0;
+            }
+            default: {
+                throw new Error("Unknown margin", margin);
+            }
         }
-
-        if (curLevel < topLevel)
-            topLevel = curLevel;
-
-        console.log(curLevel);
     });
+    console.log(markbook);
 }
 
 const makeMarkbookEditable = () => {
