@@ -1,6 +1,6 @@
 {
     "name": "BetterMaplewood",
-    "description": "BetterMaplewood, a chrome extension to make your maplewood experience better",
+    "description": "BetterMaplewood, a browser extension to make your maplewood experience better",
     "version": "2.0",
 
     "permissions": [
