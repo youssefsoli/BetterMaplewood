@@ -52,10 +52,10 @@ const calculateMarks = () => {
     let finalMark = +calculateLayer(markbook).toFixed(3);
 
     $('#markbookTable > div > div').text(`Term Mark: ${initialFinalMark} -> ${finalMark}`); // Display the final grade
-    if(!isNaN(initialFinalMark) && initialFinalMark != finalMark) {
+    if (!isNaN(initialFinalMark) && initialFinalMark != finalMark) {
         difference = +parseFloat(finalMark - initialFinalMark).toFixed(3);
 
-        if(difference > 0)
+        if (difference > 0)
             $('#markbookTable > div > div').append(` <span style="color: #00c100;">+${difference}</span>`);
         else
             $('#markbookTable > div > div').append(` <span style="color: #c10000;">${difference}</span>`);
