@@ -32,12 +32,10 @@ const calculateMarks = () => {
 
                 if (bottom && bottom.length) { // Make sure there is a bottom layer to handle
                     markbook[i].children[j].mark = calculateLayer(bottom); // Set the new mark
-                    console.log("Middle", markbook[i].children[j].mark);
                 }
             }
 
             markbook[i].mark = calculateLayer(markbook[i].children); // Set the new mark
-            console.log("Top", markbook[i].mark);
         }
     }
 
