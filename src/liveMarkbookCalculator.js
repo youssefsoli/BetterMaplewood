@@ -9,9 +9,17 @@ const calculateLayer = layer => {
             continue;
         denominator += weight;
         sum += ((mark / markDenom) * 100) * weight;
+
+        /* Update the mark display */
+        let row = layer[i].row;
+        if (row) {
+            row.find("td:nth-child(2) > input").val(+mark.toFixed(2));
+            row.find("td:nth-child(4)").text(weight);
+            row.find("td:nth-child(5)").text(markDenom);
+        }
     }
 
-    return sum / denominator; // Return the new mark
+    return parseFloat(sum / denominator); // Return the new mark
 }
 
 const calculateMarks = () => {
@@ -20,12 +28,12 @@ const calculateMarks = () => {
     for (let i = 0; i < markbook.length; i++) {
         let middle = markbook[i].children;
 
-        if(isNaN(parseFloat(markbook[i].mark))) // Make sure top isn't already invalid
+        if (isNaN(parseFloat(markbook[i].mark))) // Make sure top isn't already invalid
             continue;
 
         if (middle && middle.length) { // Make sure there is a middle layer to handle
             for (let j = 0; j < middle.length; j++) {
-                if(isNaN(parseFloat(middle[j].mark))) // Make sure middle isn't already invalid
+                if (isNaN(parseFloat(middle[j].mark))) // Make sure middle isn't already invalid
                     continue;
 
                 let bottom = middle[j].children;
@@ -39,7 +47,7 @@ const calculateMarks = () => {
         }
     }
 
-    return calculateLayer(markbook); // Return overall average
+    $('#markbookTable > div > div').text(`Term Mark: ${+calculateLayer(markbook).toFixed(3)}`); // Display the final grade
 }
 
 const parseMarkbook = () => {
@@ -54,7 +62,8 @@ const parseMarkbook = () => {
                     mark: row.find("td:nth-child(2) > input").val(),
                     weight: row.find("td:nth-child(4)").text(),
                     denominator: row.find("td:nth-child(5)").text(),
-                    children: []
+                    children: [],
+                    row: row
                 });
                 break;
             }
@@ -63,7 +72,8 @@ const parseMarkbook = () => {
                     mark: row.find("td:nth-child(2) > input").val(),
                     weight: row.find("td:nth-child(4)").text(),
                     denominator: row.find("td:nth-child(5)").text(),
-                    children: []
+                    children: [],
+                    row: row
                 });
                 break;
             }
@@ -78,7 +88,8 @@ const parseMarkbook = () => {
                 middle.push({
                     mark: row.find("td:nth-child(2) > input").val(),
                     weight: row.find("td:nth-child(4)").text(),
-                    denominator: row.find("td:nth-child(5)").text()
+                    denominator: row.find("td:nth-child(5)").text(),
+                    row: row
                 });
                 break;
             }
@@ -100,6 +111,7 @@ const makeMarkbookEditable = () => {
         const input = $(this).children('input');
         $(input).bind('input', function () {
             calculateMarks();
+            $(this).parent().css("background-color", "#ffe499"); // Change color of cell to indicate it was modified
         });
     });
 }
