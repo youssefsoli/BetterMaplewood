@@ -1,31 +1,36 @@
 {
     "name": "BetterMaplewood",
-    "description": "BetterMaplewood, a chrome extension to make your maplewood experience better",
-    "version": "1.4",
+    "description": "BetterMaplewood, a browser extension to make your maplewood experience better",
+    "version": "2.1",
 
     "permissions": [
-        "activeTab"
-      ],
+        "activeTab",
+        "storage"
+    ],
 
-      "content_scripts": [
-        {
-          "matches": ["*://hosting.maplewood.com/*/main.aspx*"],
-          "js": ["3rdparty/jquery.min.js","contentScript.js"],
-          "run_at": "document_end",
-          "all_frames": true
-        }
-      ],
+    "content_scripts": [{
+        "matches": ["*://hosting.maplewood.com/*/main.aspx*"],
+        "js": ["injector.js"],
+        "run_at": "document_end",
+        "all_frames": true
+    }],
+
+    "web_accessible_resources": [
+        "src/averageCalculator.js",
+        "src/liveMarkbookCalculator.js"
+    ],
 
     "browser_action": {
-        "default_title": "BetterMaplewood"
+        "default_title": "BetterMaplewood",
+        "default_popup": "src/popup.html"
     },
 
     "icons": {
-      "16": "img/icon16.png",
-      "32": "img/icon32.png",
-      "96": "img/icon96.png",
-      "128": "img/icon128.png",
-      "196": "img/icon196.png"
+        "16": "img/icon16.png",
+        "32": "img/icon32.png",
+        "96": "img/icon96.png",
+        "128": "img/icon128.png",
+        "196": "img/icon196.png"
     },
 
     "manifest_version": 2
