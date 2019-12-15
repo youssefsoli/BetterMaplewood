@@ -1,3 +1,5 @@
+let initialFinalMark; // Stores the initial final grade
+
 const calculateLayer = layer => {
     let sum = 0;
     let denominator = 0;
@@ -47,7 +49,17 @@ const calculateMarks = () => {
         }
     }
 
-    $('#markbookTable > div > div').text(`Term Mark: ${+calculateLayer(markbook).toFixed(3)}`); // Display the final grade
+    let finalMark = +calculateLayer(markbook).toFixed(3);
+
+    $('#markbookTable > div > div').text(`Term Mark: ${finalMark}`); // Display the final grade
+    if(!isNaN(initialFinalMark) && initialFinalMark != finalMark) {
+        difference = +parseFloat(finalMark - initialFinalMark).toFixed(3);
+
+        if(difference > 0)
+            $('#markbookTable > div > div').append(` <span style="color: #00c100;">+${difference}</span>`);
+        else
+            $('#markbookTable > div > div').append(` <span style="color: #c10000;">${difference}</span>`);
+    }
 }
 
 const parseMarkbook = () => {
@@ -103,6 +115,7 @@ const parseMarkbook = () => {
 
 const makeMarkbookEditable = () => {
     $('#markbookTable table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;} input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0px; text-align: center; width: 30pt; background-color: inherit;}</style>');
+    initialFinalMark = parseFloat($('#markbookTable > div > div').text().substr(11)); // Grab everything after 'Term Mark: '
     $('#markbookTable table tbody td:nth-child(2)').each(function () {
         const mark = $(this).text();
         if (isNaN(parseFloat(mark)) && mark !== '')
