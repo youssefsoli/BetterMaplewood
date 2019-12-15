@@ -1,7 +1,47 @@
-let markbook;
+const calculateLayer = layer => {
+    let sum = 0;
+    let denominator = 0;
+    for (let i = 0; i < layer.length; i++) {
+        let mark = parseFloat(layer[i].mark);
+        let weight = parseFloat(layer[i].weight);
+        let markDenom = parseFloat(layer[i].denominator);
+        if (isNaN(mark) || isNaN(weight) || isNaN(markDenom)) // Todo: Fix to interpret EXC, ABS, and NHI
+            continue;
+        denominator += weight;
+        sum += ((mark / markDenom) * 100) * weight;
+    }
 
-const calculateMark = mark => {
-    console.log(mark.attr('style'));
+    return sum / denominator; // Return the new mark
+}
+
+const calculateMarks = () => {
+    let markbook = parseMarkbook();
+
+    for (let i = 0; i < markbook.length; i++) {
+        let middle = markbook[i].children;
+
+        if(isNaN(parseFloat(markbook[i].mark))) // Make sure top isn't already invalid
+            continue;
+
+        if (middle && middle.length) { // Make sure there is a middle layer to handle
+            for (let j = 0; j < middle.length; j++) {
+                if(isNaN(parseFloat(middle[j].mark))) // Make sure middle isn't already invalid
+                    continue;
+
+                let bottom = middle[j].children;
+
+                if (bottom && bottom.length) { // Make sure there is a bottom layer to handle
+                    markbook[i].children[j].mark = calculateLayer(bottom); // Set the new mark
+                    console.log("Middle", markbook[i].children[j].mark);
+                }
+            }
+
+            markbook[i].mark = calculateLayer(markbook[i].children); // Set the new mark
+            console.log("Top", markbook[i].mark);
+        }
+    }
+
+    return calculateLayer(markbook); // Return overall average
 }
 
 const parseMarkbook = () => {
@@ -13,7 +53,7 @@ const parseMarkbook = () => {
         switch (margin) {
             case "0px": {
                 markbook.push({
-                    mark: row.find("td:nth-child(2)").text(),
+                    mark: row.find("td:nth-child(2) > input").val(),
                     weight: row.find("td:nth-child(4)").text(),
                     denominator: row.find("td:nth-child(5)").text(),
                     children: []
@@ -22,7 +62,7 @@ const parseMarkbook = () => {
             }
             case "20px": {
                 markbook[markbook.length - 1].children.push({ // Push a middle row into the latest top level
-                    mark: row.find("td:nth-child(2)").text(),
+                    mark: row.find("td:nth-child(2) > input").val(),
                     weight: row.find("td:nth-child(4)").text(),
                     denominator: row.find("td:nth-child(5)").text(),
                     children: []
@@ -38,7 +78,7 @@ const parseMarkbook = () => {
                 }
 
                 middle.push({
-                    mark: row.find("td:nth-child(2)").text(),
+                    mark: row.find("td:nth-child(2) > input").val(),
                     weight: row.find("td:nth-child(4)").text(),
                     denominator: row.find("td:nth-child(5)").text()
                 });
@@ -49,7 +89,7 @@ const parseMarkbook = () => {
             }
         }
     });
-    console.log(markbook);
+    return markbook;
 }
 
 const makeMarkbookEditable = () => {
@@ -61,7 +101,7 @@ const makeMarkbookEditable = () => {
         $(this).html(`<input min="0" type="number" value="${mark}" />`);
         const input = $(this).children('input');
         $(input).bind('input', function () {
-            calculateMark($(this));
+            calculateMarks();
         });
     });
 }
@@ -104,7 +144,6 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh) {
             $("#markbookTable").html(msg.d);
             $("#MarkbookDialog").dialog("option", "height", "auto").dialog("open");
             $("#markbookTable td[mrkTble!='1']").addClass("tdAchievement");
-            parseMarkbook();
             makeMarkbookEditable();
         },
         error: function (e) {
