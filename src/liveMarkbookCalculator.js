@@ -4,10 +4,21 @@ const calculateLayer = layer => {
     let sum = 0;
     let denominator = 0;
     for (let i = 0; i < layer.length; i++) {
+        if(layer[i].mark === 'NHI') // NHI is treated as a 0
+            layer[i].mark = 0;
+
         let mark = parseFloat(layer[i].mark);
         let weight = parseFloat(layer[i].weight);
         let markDenom = parseFloat(layer[i].denominator);
-        if (isNaN(mark) || isNaN(weight) || isNaN(markDenom)) // Todo: Fix to interpret EXC, ABS, and NHI
+
+        if (isNaN(mark) || isNaN(weight) || isNaN(markDenom)) // EXC, ABS, and blanks are ignored
+            continue;
+
+        if(mark < 0) // Treat negative marks as 0
+            mark = 0;
+        if(weight < 0) // Treat negative weights as 0
+            weight = 0;
+        if(markDenom <= 0) // If the denominator does not make sense, ignore whole grade
             continue;
         denominator += weight;
         sum += ((mark / markDenom) * 100) * weight;
@@ -30,12 +41,12 @@ const calculateMarks = () => {
     for (let i = 0; i < markbook.length; i++) {
         let middle = markbook[i].children;
 
-        if (isNaN(parseFloat(markbook[i].mark))) // Make sure top isn't already invalid
+        if (isNaN(parseFloat(markbook[i].mark)) && markbook[i].mark !== '') // Make sure top isn't already invalid
             continue;
 
         if (middle && middle.length) { // Make sure there is a middle layer to handle
             for (let j = 0; j < middle.length; j++) {
-                if (isNaN(parseFloat(middle[j].mark))) // Make sure middle isn't already invalid
+                if (isNaN(parseFloat(middle[j].mark)) && middle[j].mark !== '') // Make sure middle isn't already invalid
                     continue;
 
                 let bottom = middle[j].children;
