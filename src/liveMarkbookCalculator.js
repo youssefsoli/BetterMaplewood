@@ -16,8 +16,8 @@ const calculateLayer = layer => {
         let row = layer[i].row;
         if (row) {
             row.find("td:nth-child(2) > input").val(+mark.toFixed(2));
-            row.find("td:nth-child(4)").text(weight);
-            row.find("td:nth-child(5)").text(markDenom);
+            row.find("td:nth-child(4) > input").val(weight);
+            row.find("td:nth-child(5) > input").val(markDenom);
         }
     }
 
@@ -72,8 +72,8 @@ const parseMarkbook = () => {
             case "0px": {
                 markbook.push({
                     mark: row.find("td:nth-child(2) > input").val(),
-                    weight: row.find("td:nth-child(4)").text(),
-                    denominator: row.find("td:nth-child(5)").text(),
+                    weight: row.find("td:nth-child(4) > input").val(),
+                    denominator: row.find("td:nth-child(5) > input").val(),
                     children: [],
                     row: row
                 });
@@ -82,8 +82,8 @@ const parseMarkbook = () => {
             case "20px": {
                 markbook[markbook.length - 1].children.push({ // Push a middle row into the latest top level
                     mark: row.find("td:nth-child(2) > input").val(),
-                    weight: row.find("td:nth-child(4)").text(),
-                    denominator: row.find("td:nth-child(5)").text(),
+                    weight: row.find("td:nth-child(4) > input").val(),
+                    denominator: row.find("td:nth-child(5) > input").val(),
                     children: [],
                     row: row
                 });
@@ -99,8 +99,8 @@ const parseMarkbook = () => {
 
                 middle.push({
                     mark: row.find("td:nth-child(2) > input").val(),
-                    weight: row.find("td:nth-child(4)").text(),
-                    denominator: row.find("td:nth-child(5)").text(),
+                    weight: row.find("td:nth-child(4) > input").val(),
+                    denominator: row.find("td:nth-child(5) > input").val(),
                     row: row
                 });
                 break;
@@ -116,11 +116,11 @@ const parseMarkbook = () => {
 const makeMarkbookEditable = () => {
     $('#markbookTable table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;} input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0px; text-align: center; width: 30pt; background-color: inherit;}</style>');
     initialFinalMark = parseFloat($('#markbookTable > div > div').text().substr(11)); // Grab everything after 'Term Mark: '
-    $('#markbookTable table tbody td:nth-child(2)').each(function () {
-        const mark = $(this).text();
-        if (isNaN(parseFloat(mark)) && mark !== '')
+    $('#markbookTable table tbody td:nth-child(n+2):nth-child(-n+5):not(nth-child(3))').each(function () {
+        const value = $(this).text();
+        if (isNaN(parseFloat(value)) && value !== '')
             return;
-        $(this).html(`<input min="0" type="number" value="${mark}" />`);
+        $(this).html(`<input min="0" type="number" value="${value}" />`);
         const input = $(this).children('input');
         $(input).bind('input', function () {
             calculateMarks();
