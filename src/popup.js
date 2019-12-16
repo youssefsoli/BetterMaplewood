@@ -28,15 +28,15 @@ const updateSettings = () => {
 
 /* Set the initial values for the checkboxes */
 chrome.storage.sync.get(null, (settings) => {
-    if (settings) {
-        quickview.checked = settings.quickview;
-        calculation.checked = settings.calculation;
-        liveModification.checked = settings.liveModification;
-    } else { // Enable all functional settings if it hasn't been set yet
+    if (Object.entries(settings).length === 0 && settings.constructor === Object) { // Enable all functional settings if it hasn't been set yet
         quickview.checked = true;
         calculation.checked = true;
         liveModification.checked = true;
         updateSettings();
+    } else {
+        quickview.checked = settings.quickview;
+        calculation.checked = settings.calculation;
+        liveModification.checked = settings.liveModification;
     }
 });
 
