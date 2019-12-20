@@ -10,5 +10,9 @@
 * Mark overview to display each course's mark directly on the homepage
 * Live grade modification to help set mark goals
 
+# Installation
+
+[![Install - Chrome](img/chrome64.png)](https://chrome.google.com/webstore/detail/bettermaplewood/baonaojcjpfdamkoenmgolcojncppifc) **Install for Chrome**
+
 # Screenshots
 ![Sample of how a user account would look with the extension](screenshots/AvgCalc.png?raw=true)
