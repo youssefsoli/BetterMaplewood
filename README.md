@@ -16,3 +16,4 @@
 
 # Screenshots
 ![Sample of how a user account would look with the extension](screenshots/AvgCalc.png?raw=true)
+![Sample of the live markbook modifier](screenshots/LiveMarkbook.png?raw=true)
