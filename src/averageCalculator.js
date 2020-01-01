@@ -14,7 +14,7 @@ const waitForLoad = (cb) => {
     } catch (e) {
         console.log(e) // Catch errors
     }
-}
+};
 
 /**
  * @desc Extracts classes into array, with weights
@@ -35,7 +35,7 @@ const grabMarkBooks = markBooks => {
     } catch (e) {
         console.log(e);
     }
-}
+};
 
 /**
  * @desc Formats each class into its own array
@@ -50,31 +50,33 @@ const cleanseValues = markBooks => {
     } catch (e) {
         console.log(e)
     }
-}
+};
 
 /**
  * @desc Appends a column after a specified column index
  * @param {Number} i Index of column to append to
  * @param {String} name Name to give the column header
+ * @param {String} html Custom HTML to be injected
  */
 const addColumnAfter = (i, name, html) => {
     $(`#TableSecondaryClasses tr:first td:nth-child(${i}):first`).after(`<td class="mwTABLE_CELL_HEADER" align="center" rowspan="2">${name}</td>`);
     $(`#TableSecondaryClasses > tbody > tr > td:not(.mwTABLE_CELL_HEADER):nth-child(${i})`).each(function () {
         $(this).after($(this).clone().html(html));
     });
-}
+};
 
 /**
  * @desc Prepends a column before a specified column index
  * @param {Number} i Index of column to prepend to
  * @param {String} name Name to give the column header
+ * @param {String} html Custom HTML to be injected
  */
 const addColumnBefore = (i, name, html) => {
     $(`#TableSecondaryClasses tr:first td:nth-child(${i}):first`).before(`<td class="mwTABLE_CELL_HEADER" align="center" rowspan="2">${name}</td>`);
     $(`#TableSecondaryClasses > tbody > tr > td:not(.mwTABLE_CELL_HEADER):nth-child(${i})`).each(function () {
         $(this).before($(this).clone().html(html));
     });
-}
+};
 
 /**
  * @desc Loops through courseMarks and sends them to addMarkToClassRow
@@ -84,7 +86,7 @@ const addMarksToClassRows = courseMarks => {
     courseMarks.forEach(markbook => {
         addMarkToClassRow(markbook.grade, markbook.name);
     });
-}
+};
 
 /**
  * @desc Adds the grade/mark to the respective class in the table
@@ -94,12 +96,12 @@ const addMarksToClassRows = courseMarks => {
 const addMarkToClassRow = (mark, className) => {
     $("#TableSecondaryClasses tr").each(function (i, row) { // Loops through each table row
         const $row = $(row); // Get the jQuery object of the row
-        if ($row.find("td:first").text() == className) { // Check if the current row is the class we are looking for
+        if ($row.find("td:first").text() === className) { // Check if the current row is the class we are looking for
             $row.find("td:nth-child(2)").html(`${mark}`); // Append the mark if the class is found
             return; // Stop the loop and exit the function
         }
     });
-}
+};
 
 /**
  * @desc Calculates and updates the averages on the page
@@ -133,7 +135,7 @@ const calculateAverage = () => {
 
     $('#avg').text(average);
     $('#weightedAvg').text(weightedAverage);
-}
+};
 
 /**
  * @desc Sets the initial values for the weights when the page is fresh
@@ -145,7 +147,7 @@ const setWeights = () => {
             weights.forEach(weight => {
                 $("#TableSecondaryClasses tr").each(function (i, row) { // Loops through each table row
                     const $row = $(row); // Get the jQuery object of the row
-                    if ($row.find("td:first").text() == weight.name) { // Check if the current row is the class we are looking for
+                    if ($row.find("td:first").text() === weight.name) { // Check if the current row is the class we are looking for
                         $row.find("td:nth-child(3) > input").val(weight.weight); // Set the value of the weight if it exists
                         return; // Stop the loop and exit the function
                     }
@@ -173,7 +175,7 @@ const setWeights = () => {
     } catch (e) {
         console.error(e);
     }
-}
+};
 
 /**
  * @desc Updates the values of the weights in local storage when a change is detected
@@ -209,11 +211,12 @@ const updateWeights = () => {
     sessionStorage.setItem('markBooks', JSON.stringify(markBooks));
 
     calculateAverage();
-}
+};
 
 /**
  * @desc Fetches the grades for each markbook
  * @param {Array} markBooks Array that holds the class info and multipliers
+ * @param {Array} cleanedMarkbooks Array that holds the parsed markbooks
  */
 const fetchMarkbooks = async (markBooks, cleanedMarkbooks) => {
     try {
@@ -259,12 +262,13 @@ const fetchMarkbooks = async (markBooks, cleanedMarkbooks) => {
     } catch (e) {
         console.log(e)
     }
-}
+};
 
 /**
  * @desc Adds a row to the end of the table with two columns
  * @param {String} item Value to display
  * @param {String} itemName Name of the value being displayed
+ * @param {String} id The HTML id to be attached to the element
  */
 const addItemToTable = (item, itemName, id) => {
     /* Table class contains the letter that corresponds to the next color in the table rows
@@ -275,20 +279,20 @@ const addItemToTable = (item, itemName, id) => {
     /* Appends the row to the end of the table */
     $('#TableSecondaryClasses tr:last').after("<tr><td class='mwTABLE_CELL_" + tableClass +
         "'>" + itemName + "</td><td class='mwTABLE_CELL_" + tableClass + "' id='" + id + "'>" + item + "</td></tr>");
-}
+};
 
 /**
  * @desc Parses the injection of averages
  */
 const injectScores = async () => {
     try {
-        addColumnAfter(1, 'Current Mark', '<span style="color:LightGrey;">n.a.</span'); // Add the column to hold the marks
-        addColumnAfter(2, 'Weight', '<input min="0" oninput="updateWeights()" type="number" value="5" step="any">') // Add the column to hold the modifiable weights
+        addColumnAfter(1, 'Current Mark', '<span style="color:LightGrey;">n.a.</span>'); // Add the column to hold the marks
+        addColumnAfter(2, 'Weight', '<input min="0" oninput="updateWeights()" type="number" value="5" step="any">'); // Add the column to hold the modifiable weights
         setWeights(); // Sets the weightings based on localStorage
 
         /* Inject css for the inputs */
         $('#TableSecondaryClasses table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;}' +
-            'input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0px; text-align: center; width: 30pt; background-color: inherit;}</style>');
+            'input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0; text-align: center; width: 30pt; background-color: inherit;}</style>');
 
         if (!sessionStorage.markBooks) { // If the courseGrades don't exist
             let markBooks = [];
@@ -309,7 +313,7 @@ const injectScores = async () => {
     } catch (e) {
         console.log(e)
     }
-}
+};
 
 /**
  * @desc Disables the enter key from submitting the form
@@ -317,13 +321,13 @@ const injectScores = async () => {
 const disableEnter = () => {
     $(document).ready(() => {
         $(window).keydown(event => {
-            if (event.keyCode == 13) {
+            if (event.keyCode === 13) {
                 event.preventDefault();
                 return false;
             }
         });
     });
-}
+};
 
 /**
  * @desc Polls the page to see if the average rows have been removed
@@ -334,7 +338,7 @@ const pollScores = () => {
     } else {
         setTimeout(pollScores, 1000); // Poll once more for 1 second if it is found
     }
-}
+};
 
 /**
  * @desc Main function, initializes the average calculation feature
@@ -347,7 +351,7 @@ const init = () => {
         });
     } catch (e) {
         console.log(e)
-    };
-}
+    }
+};
 
 init(); // Call the initialization function
