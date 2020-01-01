@@ -1,3 +1,6 @@
 # Todo file
 TODO
 *.TODO
+
+# IntelliJ files
+/.idea
