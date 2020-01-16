@@ -21,7 +21,7 @@ const calculateLayer = layer => {
         if(markDenom <= 0) // If the denominator does not make sense, ignore whole grade
             continue;
         denominator += weight;
-        sum += ((mark / markDenom) * 100) * weight;
+        sum += (mark / markDenom) * weight;
 
         /* Update the mark display */
         let row = layer[i].row;
@@ -52,15 +52,15 @@ const calculateMarks = () => {
                 let bottom = middle[j].children;
 
                 if (bottom && bottom.length) { // Make sure there is a bottom layer to handle
-                    markbook[i].children[j].mark = calculateLayer(bottom); // Set the new mark
+                    markbook[i].children[j].mark = calculateLayer(bottom) * markbook[i].children[j].denominator; // Set the new mark
                 }
             }
 
-            markbook[i].mark = calculateLayer(markbook[i].children); // Set the new mark
+            markbook[i].mark = calculateLayer(markbook[i].children) * markbook[i].denominator; // Set the new mark
         }
     }
 
-    let finalMark = +calculateLayer(markbook).toFixed(3);
+    let finalMark = +(calculateLayer(markbook) * 100).toFixed(3);
 
     $('#markbookTable > div > div').text(`Term Mark: ${initialFinalMark} -> ${finalMark}`); // Display the final grade
     if (!isNaN(initialFinalMark) && initialFinalMark != finalMark) {
