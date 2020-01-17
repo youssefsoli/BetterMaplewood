@@ -1,5 +1,10 @@
 let initialFinalMark; // Stores the initial final grade
 
+/**
+ * @desc Takes in a mark layer and calculates the total mark based off weights and raw score
+ * @param {Array} layer Mark layer to be calculated
+ * @returns {Number} Overall mark of the current layer
+ */
 const calculateLayer = layer => {
     let sum = 0;
     let denominator = 0;
@@ -32,9 +37,12 @@ const calculateLayer = layer => {
         }
     }
 
-    return parseFloat(sum / denominator); // Return the new mark
-}
+    return parseFloat(sum / denominator); // Return the new mark as a decimal
+};
 
+/**
+ * @desc Runs the whole markbook through the layer calculator and modifies the displayed markbook
+ */
 const calculateMarks = () => {
     let markbook = parseMarkbook();
 
@@ -61,18 +69,23 @@ const calculateMarks = () => {
     }
 
     let finalMark = +(calculateLayer(markbook) * 100).toFixed(3);
+    let finalMarkSelector = $('#markbookTable > div > div');
 
-    $('#markbookTable > div > div').text(`Term Mark: ${initialFinalMark} -> ${finalMark}`); // Display the final grade
-    if (!isNaN(initialFinalMark) && initialFinalMark != finalMark) {
+    finalMarkSelector.text(`Term Mark: ${initialFinalMark} -> ${finalMark}`); // Display the final grade
+    if (!isNaN(initialFinalMark) && initialFinalMark !== finalMark) {
         difference = +parseFloat(finalMark - initialFinalMark).toFixed(3);
 
         if (difference > 0)
-            $('#markbookTable > div > div').append(` <span style="color: #00c100;">+${difference}</span>`);
+            finalMarkSelector.append(` <span style="color: #00c100;">+${difference}</span>`);
         else
-            $('#markbookTable > div > div').append(` <span style="color: #c10000;">${difference}</span>`);
+            finalMarkSelector.append(` <span style="color: #c10000;">${difference}</span>`);
     }
-}
+};
 
+/**
+ * @desc Iterates over the current markbook and parses the mark information into an array
+ * @returns {Array} Holds the values of the current markbook
+ */
 const parseMarkbook = () => {
     markbook = [];
     $('#markbookTable table tbody > tr:gt(0)').each(function () { // Loop through each row except the first
@@ -122,10 +135,13 @@ const parseMarkbook = () => {
         }
     });
     return markbook;
-}
+};
 
+/**
+ * @desc Converts the current open markbook to an editable format
+ */
 const makeMarkbookEditable = () => {
-    $('#markbookTable table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;} input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0px; text-align: center; width: 30pt; background-color: inherit;}</style>');
+    $('#markbookTable table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;} input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0; text-align: center; width: 30pt; background-color: inherit;}</style>');
     initialFinalMark = parseFloat($('#markbookTable > div > div').text().substr(11)); // Grab everything after 'Term Mark: '
     $('#markbookTable table tbody td:nth-child(n+2):nth-child(-n+5):not(:nth-child(3))').each(function () {
         const value = $(this).text();
@@ -138,9 +154,9 @@ const makeMarkbookEditable = () => {
             $(this).parent().css("background-color", "#ffe499"); // Change color of cell to indicate it was modified
         });
     });
-}
+};
 
-/* Load Markbook Override */
+/* Load Markbook Override (Pre-existing function used when a markbook is opened) */
 loadMarkbook = function (studentID, classID, termID, topicID, title, refresh) {
 
     if (refresh) {
@@ -185,4 +201,4 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh) {
             $("#MarkbookDialog").dialog("option", "height", "auto").dialog("open");
         }
     });
-}
+};
