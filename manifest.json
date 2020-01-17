@@ -1,17 +1,20 @@
 {
     "name": "BetterMaplewood",
     "description": "BetterMaplewood, a browser extension to make your maplewood experience better",
-    "version": "2.1",
-
+    "version": "2.2",
     "permissions": [
         "activeTab",
         "storage"
     ],
-
-    "content_scripts": [{
-        "matches": ["*://hosting.maplewood.com/*/main.aspx*"],
-        "js": ["injector.js"],
-        "run_at": "document_end",
+    "content_scripts": [
+        {
+            "matches": [
+                "*://hosting.maplewood.com/*/main.aspx*"
+            ],
+            "js": [
+                "injector.js"
+            ],
+            "run_at": "document_end",
         "all_frames": true
     }],
 
