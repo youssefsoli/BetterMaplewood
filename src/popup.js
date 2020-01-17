@@ -3,9 +3,9 @@ let calculation = document.getElementById('calculation');
 let liveModification = document.getElementById('liveModification');
 
 const updateSettings = () => {
-    quickviewToggle = quickview.checked;
-    calculationToggle = calculation.checked;
-    liveModificationToggle = liveModification.checked;
+    let quickviewToggle = quickview.checked;
+    let calculationToggle = calculation.checked;
+    let liveModificationToggle = liveModification.checked;
     let settings = {
         quickview: quickviewToggle,
         calculation: calculationToggle,
@@ -24,7 +24,7 @@ const updateSettings = () => {
                 });
         });
     });
-}
+};
 
 /* Set the initial values for the checkboxes */
 chrome.storage.sync.get(null, (settings) => {

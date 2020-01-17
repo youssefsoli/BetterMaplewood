@@ -31,9 +31,9 @@ const calculateLayer = layer => {
         /* Update the mark display */
         let row = layer[i].row;
         if (row) {
-            row.find("td:nth-child(2) > input").val(+mark.toFixed(2));
-            row.find("td:nth-child(4) > input").val(weight);
-            row.find("td:nth-child(5) > input").val(markDenom);
+            row.find('td:nth-child(2) > input').val(+mark.toFixed(2));
+            row.find('td:nth-child(4) > input').val(weight);
+            row.find('td:nth-child(5) > input').val(markDenom);
         }
     }
 
@@ -73,7 +73,7 @@ const calculateMarks = () => {
 
     finalMarkSelector.text(`Term Mark: ${initialFinalMark} -> ${finalMark}`); // Display the final grade
     if (!isNaN(initialFinalMark) && initialFinalMark !== finalMark) {
-        difference = +parseFloat(finalMark - initialFinalMark).toFixed(3);
+        let difference = +parseFloat(finalMark - initialFinalMark).toFixed(3);
 
         if (difference > 0)
             finalMarkSelector.append(` <span style="color: #00c100;">+${difference}</span>`);
@@ -87,33 +87,33 @@ const calculateMarks = () => {
  * @returns {Array} Holds the values of the current markbook
  */
 const parseMarkbook = () => {
-    markbook = [];
+    let markbook = [];
     $('#markbookTable table tbody > tr:gt(0)').each(function () { // Loop through each row except the first
         const row = $(this);
-        const margin = row.find("td:first > span:first")[0].style["margin-left"];
+        const margin = row.find('td:first > span:first')[0].style['margin-left'];
 
         switch (margin) {
-            case "0px": {
+            case '0px': {
                 markbook.push({
-                    mark: row.find("td:nth-child(2) > input").val(),
-                    weight: row.find("td:nth-child(4) > input").val(),
-                    denominator: row.find("td:nth-child(5) > input").val(),
+                    mark: row.find('td:nth-child(2) > input').val(),
+                    weight: row.find('td:nth-child(4) > input').val(),
+                    denominator: row.find('td:nth-child(5) > input').val(),
                     children: [],
                     row: row
                 });
                 break;
             }
-            case "20px": {
+            case '20px': {
                 markbook[markbook.length - 1].children.push({ // Push a middle row into the latest top level
-                    mark: row.find("td:nth-child(2) > input").val(),
-                    weight: row.find("td:nth-child(4) > input").val(),
-                    denominator: row.find("td:nth-child(5) > input").val(),
+                    mark: row.find('td:nth-child(2) > input').val(),
+                    weight: row.find('td:nth-child(4) > input').val(),
+                    denominator: row.find('td:nth-child(5) > input').val(),
                     children: [],
                     row: row
                 });
                 break;
             }
-            case "40px": {
+            case '40px': {
                 let top = markbook[markbook.length - 1].children;
                 let middle = !top[top.length - 1] ? top : top[top.length - 1].children;
 
@@ -122,15 +122,15 @@ const parseMarkbook = () => {
                 }
 
                 middle.push({
-                    mark: row.find("td:nth-child(2) > input").val(),
-                    weight: row.find("td:nth-child(4) > input").val(),
-                    denominator: row.find("td:nth-child(5) > input").val(),
+                    mark: row.find('td:nth-child(2) > input').val(),
+                    weight: row.find('td:nth-child(4) > input').val(),
+                    denominator: row.find('td:nth-child(5) > input').val(),
                     row: row
                 });
                 break;
             }
             default: {
-                throw new Error("Unknown margin", margin);
+                throw new Error('Unknown margin', margin);
             }
         }
     });
@@ -151,7 +151,7 @@ const makeMarkbookEditable = () => {
         const input = $(this).children('input');
         $(input).bind('input', function () {
             calculateMarks();
-            $(this).parent().css("background-color", "#ffe499"); // Change color of cell to indicate it was modified
+            $(this).parent().css('background-color', '#ffe499'); // Change color of cell to indicate it was modified
         });
     });
 };
@@ -173,32 +173,29 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh) {
         termID_ = termID;
     }
 
-    $("#MarkbookDialog").dialog("option", "title", title);
-    $("#markbookTable").html('<div><img alt="Loading...." src="' + mwMrkBookDialogRootPath + 'viewer/clsmgr/images/ajax-loader2.gif" />&nbsp;Loading...</div>');
-    $("#MarkbookDialog").dialog("option", "height", "auto").dialog("open");
+    $('#MarkbookDialog').dialog('option', 'title', title);
+    $('#markbookTable').html('<div><img alt="Loading...." src="' + mwMrkBookDialogRootPath + 'viewer/clsmgr/images/ajax-loader2.gif" />&nbsp;Loading...</div>');
+    $('#MarkbookDialog').dialog('option', 'height', 'auto').dialog('open');
 
-    var fromDate = '';
-    var toDate = '';
-
-    fromDate = $("#mrkbkFromDate").datepicker().val();
-    toDate = $("#mrkbkToDate").datepicker().val();
+    let fromDate = $('#mrkbkFromDate').datepicker().val();
+    let toDate = $('#mrkbkToDate').datepicker().val();
 
     $.ajax({
-        type: "POST",
-        url: mwMrkBookDialogRootPath + "viewer/Achieve/TopicBas/StuMrks.aspx/GetMarkbook",
-        data: "{studentID: " + studentID + ", classID: " + classID + ", termID: " + termID + ", topicID: " + topicID + ", fromDate: '" + fromDate + "', toDate: '" + toDate + "', relPath: '" + mwMrkBookDialogRootPath + "'}",
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
+        type: 'POST',
+        url: mwMrkBookDialogRootPath + 'viewer/Achieve/TopicBas/StuMrks.aspx/GetMarkbook',
+        data: '{studentID: ' + studentID + ', classID: ' + classID + ', termID: ' + termID + ', topicID: ' + topicID + ', fromDate: \'' + fromDate + '\', toDate: \'' + toDate + '\', relPath: \'' + mwMrkBookDialogRootPath + '\'}',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
         success: function (msg) {
-            $("#MarkbookDialog").dialog("close");
-            $("#markbookTable").html(msg.d);
-            $("#MarkbookDialog").dialog("option", "height", "auto").dialog("open");
-            $("#markbookTable td[mrkTble!='1']").addClass("tdAchievement");
+            $('#MarkbookDialog').dialog('close');
+            $('#markbookTable').html(msg.d);
+            $('#MarkbookDialog').dialog('option', 'height', 'auto').dialog('open');
+            $('#markbookTable td[mrkTble!=\'1\']').addClass('tdAchievement');
             makeMarkbookEditable();
         },
-        error: function (e) {
-            $("#markbookTable").html("(error loading marbook)");
-            $("#MarkbookDialog").dialog("option", "height", "auto").dialog("open");
+        error: function () {
+            $('#markbookTable').html('(error loading marbook)');
+            $('#MarkbookDialog').dialog('option', 'height', 'auto').dialog('open');
         }
     });
 };
