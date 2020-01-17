@@ -27,7 +27,6 @@
         "default_title": "BetterMaplewood",
         "default_popup": "src/popup.html"
     },
-
     "icons": {
         "16": "img/icon16.png",
         "32": "img/icon32.png",
@@ -35,6 +34,10 @@
         "128": "img/icon128.png",
         "196": "img/icon196.png"
     },
-
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "{b50c1372-c516-4876-bbc8-c6143d1df859}"
+        }
+    },
     "manifest_version": 2
 }
