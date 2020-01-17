@@ -1,0 +1,19 @@
+{
+  "name": "bettermaplewood",
+  "version": "2.2.0",
+  "description": "A browser extension to make your maplewood experience better",
+  "devDependencies": {
+    "eslint": "^6.8.0"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/youssefsoli/BetterMaplewood.git"
+  },
+  "author": "youssefsoli",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/youssefsoli/BetterMaplewood/issues"
+  },
+  "homepage": "https://github.com/youssefsoli/BetterMaplewood#readme"
+}
