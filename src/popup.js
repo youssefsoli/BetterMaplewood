@@ -1,15 +1,18 @@
 let quickview = document.getElementById('quickview');
 let calculation = document.getElementById('calculation');
 let liveModification = document.getElementById('liveModification');
+let publicMode = document.getElementById('publicMode');
 
 const updateSettings = () => {
     let quickviewToggle = quickview.checked;
     let calculationToggle = calculation.checked;
     let liveModificationToggle = liveModification.checked;
+    let publicModeToggle = publicMode.checked;
     let settings = {
         quickview: quickviewToggle,
         calculation: calculationToggle,
-        liveModification: liveModificationToggle
+        liveModification: liveModificationToggle,
+        publicMode: publicModeToggle
     };
 
     chrome.storage.sync.set(settings, () => {
@@ -32,14 +35,17 @@ chrome.storage.sync.get(null, (settings) => {
         quickview.checked = true;
         calculation.checked = true;
         liveModification.checked = true;
+        publicMode.checked = false; // Disabled by default
         updateSettings();
     } else {
         quickview.checked = settings.quickview;
         calculation.checked = settings.calculation;
         liveModification.checked = settings.liveModification;
+        publicMode.checked = settings.publicMode;
     }
 });
 
 quickview.onchange = updateSettings;
 calculation.onchange = updateSettings;
 liveModification.onchange = updateSettings;
+publicMode.onchange = updateSettings;

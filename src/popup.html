@@ -15,6 +15,16 @@
             margin-left: auto;
             margin-right: auto;
         }
+
+        .icon {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            overflow: hidden;
+            filter: invert(20%) sepia(50%) contrast(50%);
+            float: right;
+            vertical-align: middle;
+        }
     </style>
 </head>
 
@@ -23,6 +33,7 @@
     <img class="center" src="../img/icon32.png">
     <h3 class="title">BetterMaplewood</h3>
 </div>
+<hr>
 <div>
     <input checked data-size="mini" data-toggle="toggle" id="quickview" type="checkbox">
     <label for="quickview">Enable mark quickview</label>
@@ -35,8 +46,16 @@
     <input checked data-size="mini" data-toggle="toggle" id="liveModification" type="checkbox">
     <label for="liveModification">Enable live mark modification</label>
 </div>
+<hr>
+<div>
+    <input checked data-size="mini" data-toggle="toggle" id="publicMode" type="checkbox">
+    <label for="publicMode">Enable public computer mode</label>
+    <img class="icon" src="../img/info.svg"
+         title="Disables the storage of marks to the browser, instead a fresh instance of BetterMaplewood is run every page load.">
+    <!-- Icon License: https://fontawesome.com/license -->
+</div>
 <div style="text-align: center; margin-top: 15px;">Created with ❤️ by Youssef Soliman</div>
-    <script src="popup.js"></script>
+<script src="popup.js"></script>
 </body>
 
 </html>

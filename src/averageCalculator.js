@@ -112,7 +112,7 @@ const calculateAverage = () => {
     let totalClasses = 0;
     let totalWeights = 0;
     let average, weightedAverage;
-    let markBooks = JSON.parse(sessionStorage.markBooks);
+    let markBooks = window.markBooks;
 
     markBooks.forEach(function (markbook) {
         if (isNaN(parseFloat(markbook.multiplier)) || markbook.multiplier <= 0) // If the class is given a <= 0 or no weighting
@@ -182,7 +182,7 @@ const setWeights = () => {
  */
 const updateWeights = () => {
     const weights = [];
-    let markBooks = JSON.parse(sessionStorage.markBooks);
+    let markBooks = window.markBooks;
 
     $('#TableSecondaryClasses tr').each(function (i, row) { // Loops through each table row
         const $row = $(row); // Get the jQuery object of the row
@@ -208,7 +208,10 @@ const updateWeights = () => {
     });
 
     localStorage.setItem('weights', JSON.stringify(weights));
-    sessionStorage.setItem('markBooks', JSON.stringify(markBooks));
+    if (!window.settings.publicMode)
+        sessionStorage.setItem('markBooks', JSON.stringify(markBooks));
+
+    window.markBooks = markBooks;
 
     calculateAverage();
 };
@@ -293,13 +296,20 @@ const injectScores = async () => {
         $('#TableSecondaryClasses table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;}' +
             'input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0; text-align: center; width: 30pt; background-color: inherit;}</style>');
 
-        if (!sessionStorage.markBooks) { // If the courseGrades don't exist
+        if (window.settings.publicMode)
+            sessionStorage.clear(); // Clear the mark storage
+
+        if (!sessionStorage.markBooks) { // If the courseGrades don't exist, fetch them
             let markBooks = [];
-            let cleanedMarkbooks = [];
+            window.markBooks = [];
             grabMarkBooks(markBooks); // Grab the markbooks
             cleanseValues(markBooks); // Parse the markbooks
-            await fetchMarkbooks(markBooks, cleanedMarkbooks); // Await the values of the markbooks
-            sessionStorage.setItem('markBooks', JSON.stringify(cleanedMarkbooks));
+            await fetchMarkbooks(markBooks, window.markBooks); // Await the values of the markbooks
+
+            if (!window.settings.publicMode) // Store grades locally if public mode is disabled
+                sessionStorage.setItem('markBooks', JSON.stringify(window.markBooks));
+        } else {
+            window.markBooks = sessionStorage.getItem('markBooks');
         }
         if (window.settings.calculation) {
             addItemToTable('<span style="color:LightGrey;">n.a.</span>', 'Average (Weighted)', 'weightedAvg');
@@ -308,7 +318,7 @@ const injectScores = async () => {
             setTimeout(pollScores, 2000); // Second call to pollScores since 'calculateAverage' is asynchronous
         }
         if (window.settings.quickview)
-            addMarksToClassRows(JSON.parse(sessionStorage.markBooks));
+            addMarksToClassRows(window.markBooks);
     } catch (e) {
         console.log(e);
     }
