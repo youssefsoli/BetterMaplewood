@@ -145,10 +145,25 @@ const makeMarkbookEditable = () => {
     initialFinalMark = parseFloat($('#markbookTable > div > div').text().substr(11)); // Grab everything after 'Term Mark: '
     $('#markbookTable table tbody td:nth-child(n+2):nth-child(-n+5):not(:nth-child(3))').each(function () {
         const value = $(this).text();
-        if (isNaN(parseFloat(value)) && value !== '')
-            return;
-        $(this).html(`<input min="0" type="number" value="${value}" />`);
+        let inputHTML = `<input min="0" type="number" value="${value}" />`;
+
+        if (isNaN(parseFloat(value)) && value !== '') {
+            if (value === 'NHI')
+                inputHTML = '<span>NHI</span><input min="0" type="number" value="0" style="display: none;" />';
+            else // EXC and ABS
+                inputHTML = `<span>${value}</span><input min="0" type="number" value="" style="display: none;" />`;
+        }
+
+        $(this).html(inputHTML);
         const input = $(this).children('input');
+        const span = $(this).children('span');
+
+        if (span) {
+            $(span).bind('click', function () {
+                input.show();
+                $(this).remove();
+            });
+        }
         $(input).bind('input', function () {
             calculateMarks();
             $(this).parent().css('background-color', '#ffe499'); // Change color of cell to indicate it was modified
