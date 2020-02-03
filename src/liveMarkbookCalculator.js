@@ -9,9 +9,6 @@ const calculateLayer = layer => {
     let sum = 0;
     let denominator = 0;
     for (let i = 0; i < layer.length; i++) {
-        if(layer[i].mark === 'NHI') // NHI is treated as a 0
-            layer[i].mark = 0;
-
         let mark = parseFloat(layer[i].mark);
         let weight = parseFloat(layer[i].weight);
         let markDenom = parseFloat(layer[i].denominator);
@@ -49,12 +46,12 @@ const calculateMarks = () => {
     for (let i = 0; i < markbook.length; i++) {
         let middle = markbook[i].children;
 
-        if (isNaN(parseFloat(markbook[i].mark)) && markbook[i].mark !== '') // Make sure top isn't already invalid
+        if ((isNaN(parseFloat(markbook[i].mark)) && markbook[i].mark !== '') || markbook[i].row.find('td:nth-child(2) > input').is(':hidden')) // Make sure top isn't already invalid or hidden
             continue;
 
         if (middle && middle.length) { // Make sure there is a middle layer to handle
             for (let j = 0; j < middle.length; j++) {
-                if (isNaN(parseFloat(middle[j].mark)) && middle[j].mark !== '') // Make sure middle isn't already invalid
+                if ((isNaN(parseFloat(middle[j].mark)) && middle[j].mark !== '') || middle[j].row.find('td:nth-child(2) > input').is(':hidden')) // Make sure middle isn't already invalid or hidden
                     continue;
 
                 let bottom = middle[j].children;
@@ -150,8 +147,10 @@ const makeMarkbookEditable = () => {
         if (isNaN(parseFloat(value)) && value !== '') {
             if (value === 'NHI')
                 inputHTML = '<span>NHI</span><input min="0" type="number" value="0" style="display: none;" />';
-            else // EXC and ABS
+            else if (value === 'EXC' || value === 'ABS') // EXC and ABS
                 inputHTML = `<span>${value}</span><input min="0" type="number" value="" style="display: none;" />`;
+            else
+                return; // Ignore other values
         }
 
         $(this).html(inputHTML);
@@ -161,6 +160,7 @@ const makeMarkbookEditable = () => {
         if (span) {
             $(span).bind('click', function () {
                 input.show();
+                calculateMarks();
                 $(this).remove();
             });
         }
