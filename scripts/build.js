@@ -7,8 +7,12 @@ const packExtension = (zipName, manifestName) => {
         zlib: {level: 9}
     });
 
-    archive.on('error', function (err) {
+    archive.on('error', (err) => {
         throw err;
+    });
+
+    archive.on('end', () => {
+        console.log('Successfully packaged ' + zipName + '\n' + archive.pointer() + ' total bytes written\n');
     });
 
     archive.pipe(file);
@@ -22,5 +26,6 @@ const packExtension = (zipName, manifestName) => {
     archive.finalize();
 };
 
+console.log('Starting package process\n');
 packExtension('chrome.zip', 'manifest.json');
 packExtension('firefox.zip', 'manifest_firefox.json');
