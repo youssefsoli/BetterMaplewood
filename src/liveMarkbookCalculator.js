@@ -145,8 +145,8 @@ const makeMarkbookEditable = () => {
         let inputHTML = `<input min="0" type="number" value="${value}" />`;
 
         if (isNaN(parseFloat(value)) && value !== '') {
-            if (value === 'NHI')
-                inputHTML = '<span>NHI</span><input min="0" type="number" value="0" style="display: none;" />';
+            if (value === 'NHI' || value === 'INC')
+                inputHTML = `<span>${value}</span><input min="0" type="number" value="0" style="display: none;" />`;
             else if (value === 'EXC' || value === 'ABS') // EXC and ABS
                 inputHTML = `<span>${value}</span><input min="0" type="number" value="" style="display: none;" />`;
             else
