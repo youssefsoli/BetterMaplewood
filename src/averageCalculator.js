@@ -87,7 +87,7 @@ const addMarksToClassRows = () => {
         const markCell = markbook.row.find('td:nth-child(2)');
 
         if (window.settings.liveModification) {
-            markCell.html(`<input min="0" type="number" value="${markbook.grade}" />`);
+            markCell.html(`<input class="grade" min="0" type="number" value="${markbook.grade}" />`);
             const input = markCell.children('input');
             $(input).bind('input', function () {
                 let mark = parseFloat($(this).val());
@@ -197,11 +197,10 @@ const updateWeights = () => {
         });
     });
 
-    markBooks.forEach((markbook, i, books) => {
-        weights.forEach(function (weight) {
+    markBooks.forEach((markbook) => {
+        weights.forEach((weight) => {
             if (weight.name === markbook.name) {
-                books[i].multiplier = weight.weight;
-
+                markbook.multiplier = weight.weight;
             }
         });
     });
@@ -225,7 +224,7 @@ const fetchMarkbooks = async (markBooks, cleanedMarkbooks) => {
         /* This absolute URL method is needed since relative paths break in firefox */
         const currentURL = new URL(window.location.href); // Parse the current location as a URL object
         const postURL = currentURL.origin + currentURL.pathname + '/../../../viewer/Achieve/TopicBas/StuMrks.aspx/GetMarkbook'; // Segment and add the parts to a single string
-        markBooks.forEach((markbook, i, books) => {
+        markBooks.forEach((markbook) => {
             const classID = markbook.classInfo[1]; // Extract the classID from the second element in the markbook's info
             const termID = markbook.classInfo[2]; // Extract the termID from the third element in the markbook's info
             const topicID = markbook.classInfo[3]; // Extract the topicID from the fourth element in the markbook's info
@@ -250,8 +249,8 @@ const fetchMarkbooks = async (markBooks, cleanedMarkbooks) => {
                         const classScore = parseFloat(tempResp.substr(11)); // Grab everything after 'Term Mark: ' and parse as float
                         if (isNaN(classScore))
                             return;
-                        books[i].grade = classScore;
-                        cleanedMarkbooks.push(books[i]);
+                        markbook.grade = classScore;
+                        cleanedMarkbooks.push(markbook);
                     }
                 },
                 error: e => console.log(e.statusText) // Log any ajax errors
@@ -290,7 +289,7 @@ const injectScores = async () => {
         setWeights(); // Sets the weightings based on localStorage
 
         /* Inject css for the inputs */
-        $('#TableSecondaryClasses table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;}' +
+        $('#TableSecondaryClasses table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;}input[type="number"].grade{text-align: left}' +
             'input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0; text-align: center; width: 30pt; background-color: inherit;}</style>');
 
         let markBooks = [];
