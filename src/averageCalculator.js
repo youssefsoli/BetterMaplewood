@@ -29,7 +29,8 @@ const grabMarkBooks = markBooks => {
             markBooks.push({ // Adds class to array with a multiplier and its info
                 name: className,
                 classInfo: $(this).attr('onclick'), // Holds class information
-                multiplier: parseFloat(multiplier) // Holds multiplier/weight of class
+                multiplier: parseFloat(multiplier), // Holds multiplier/weight of class
+                row: $row // Holds the jQuery selector for the mark row
             });
         });
     } catch (e) {
@@ -79,26 +80,24 @@ const addColumnBefore = (i, name, html) => {
 };
 
 /**
- * @desc Loops through courseMarks and sends them to addMarkToClassRow
- * @param {Object} courseMarks Holds key value pairs of className:classScore
+ * @desc Loops through the markbooks and adds an editable grade input
  */
-const addMarksToClassRows = courseMarks => {
-    courseMarks.forEach(markbook => {
-        addMarkToClassRow(markbook.grade, markbook.name);
-    });
-};
+const addMarksToClassRows = () => {
+    window.markBooks.forEach(function (markbook) {
+        const markCell = markbook.row.find('td:nth-child(2)');
 
-/**
- * @desc Adds the grade/mark to the respective class in the table
- * @param {String} mark Holds the mark of the given class
- * @param {String} className The name of the class with the given mark
- */
-const addMarkToClassRow = (mark, className) => {
-    $('#TableSecondaryClasses tr').each(function (i, row) { // Loops through each table row
-        const $row = $(row); // Get the jQuery object of the row
-        if ($row.find('td:first').text() === className) { // Check if the current row is the class we are looking for
-            $row.find('td:nth-child(2)').html(`${mark}`); // Append the mark if the class is found
-            return; // Stop the loop and exit the function
+        if (window.settings.liveModification) {
+            markCell.html(`<input min="0" type="number" value="${markbook.grade}" />`);
+            const input = markCell.children('input');
+            $(input).bind('input', function () {
+                let mark = parseFloat($(this).val());
+                if (!isNaN(mark))
+                    markbook.grade = mark;
+                calculateAverage();
+                $(this).parent().css('background-color', '#ffe499'); // Change color of cell to indicate it was modified
+            });
+        } else {
+            markCell.html(`${markbook.grade}`);
         }
     });
 };
@@ -208,8 +207,6 @@ const updateWeights = () => {
     });
 
     localStorage.setItem('weights', JSON.stringify(weights));
-    if (!window.settings.publicMode)
-        sessionStorage.setItem('markBooks', JSON.stringify(markBooks));
 
     window.markBooks = markBooks;
 
@@ -296,21 +293,12 @@ const injectScores = async () => {
         $('#TableSecondaryClasses table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;}' +
             'input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0; text-align: center; width: 30pt; background-color: inherit;}</style>');
 
-        if (window.settings.publicMode)
-            sessionStorage.clear(); // Clear the mark storage
+        let markBooks = [];
+        window.markBooks = [];
+        grabMarkBooks(markBooks); // Grab the markbooks
+        cleanseValues(markBooks); // Parse the markbooks
+        await fetchMarkbooks(markBooks, window.markBooks); // Await the values of the markbooks
 
-        if (!sessionStorage.markBooks) { // If the courseGrades don't exist, fetch them
-            let markBooks = [];
-            window.markBooks = [];
-            grabMarkBooks(markBooks); // Grab the markbooks
-            cleanseValues(markBooks); // Parse the markbooks
-            await fetchMarkbooks(markBooks, window.markBooks); // Await the values of the markbooks
-
-            if (!window.settings.publicMode) // Store grades locally if public mode is disabled
-                sessionStorage.setItem('markBooks', JSON.stringify(window.markBooks));
-        } else {
-            window.markBooks = sessionStorage.getItem('markBooks');
-        }
         if (window.settings.calculation) {
             addItemToTable('<span style="color:LightGrey;">n.a.</span>', 'Average (Weighted)', 'weightedAvg');
             addItemToTable('<span style="color:LightGrey;">n.a.</span>', 'Average', 'avg');
@@ -318,7 +306,7 @@ const injectScores = async () => {
             setTimeout(pollScores, 2000); // Second call to pollScores since 'calculateAverage' is asynchronous
         }
         if (window.settings.quickview)
-            addMarksToClassRows(window.markBooks);
+            addMarksToClassRows();
     } catch (e) {
         console.log(e);
     }
