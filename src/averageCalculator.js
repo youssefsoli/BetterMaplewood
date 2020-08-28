@@ -228,11 +228,19 @@ const fetchMarkbooks = async (markBooks, cleanedMarkbooks) => {
             const classID = markbook.classInfo[1]; // Extract the classID from the second element in the markbook's info
             const termID = markbook.classInfo[2]; // Extract the termID from the third element in the markbook's info
             const topicID = markbook.classInfo[3]; // Extract the topicID from the fourth element in the markbook's info
-            const toPost = '{studentID: ' + studentID + // Holds the message that will be sent to the server via AJAX
-                ', classID: ' + classID +
-                ', termID: ' + termID +
-                ', topicID: ' + topicID +
-                ', fromDate: \'1/1/2000\', toDate: \'1/1/3000\', relPath: \'../../../\'}';
+            const stuLetters = markbook.classInfo[6] || '';
+            const orgID = markbook.classInfo[7] || -1;
+            const toPost = JSON.stringify({
+                studentID,
+                classID,
+                termID,
+                topicID,
+                fromDate: '1/1/2000',
+                toDate: '1/1/3000',
+                relPath: '../../../',
+                stuLetters,
+                orgID
+            });
             requests.push($.ajax({
                 type: 'POST', // Post request
                 url: postURL, // File that holds markbooks

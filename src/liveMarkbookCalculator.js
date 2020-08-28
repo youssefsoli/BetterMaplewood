@@ -172,7 +172,7 @@ const makeMarkbookEditable = () => {
 };
 
 /* Load Markbook Override (Pre-existing function used when a markbook is opened) */
-loadMarkbook = function (studentID, classID, termID, topicID, title, refresh) {
+loadMarkbook = function (studentID, classID, termID, topicID, title, refresh, stuLetters, orgId) {
 
     if (refresh) {
         studentID = studentID_;
@@ -180,12 +180,16 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh) {
         topicID = topicID_;
         termID = termID_;
         title = title_;
+        stuLetters = stuLetters_;
+        orgId = orgId_;
     } else {
         studentID_ = studentID;
         classID_ = classID;
         topicID_ = topicID;
         title_ = title;
         termID_ = termID;
+        stuLetters_ = stuLetters;
+        orgId_ = orgId;
     }
 
     $('#MarkbookDialog').dialog('option', 'title', title);
@@ -198,7 +202,17 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh) {
     $.ajax({
         type: 'POST',
         url: mwMrkBookDialogRootPath + 'viewer/Achieve/TopicBas/StuMrks.aspx/GetMarkbook',
-        data: '{studentID: ' + studentID + ', classID: ' + classID + ', termID: ' + termID + ', topicID: ' + topicID + ', fromDate: \'' + fromDate + '\', toDate: \'' + toDate + '\', relPath: \'' + mwMrkBookDialogRootPath + '\'}',
+        data: JSON.stringify({
+            studentID: studentID,
+            classID: classID,
+            termID: termID,
+            topicID: topicID,
+            fromDate: fromDate,
+            toDate: toDate,
+            relPath: mwMrkBookDialogRootPath,
+            stuLetters: stuLetters || '',
+            orgID: orgId || -1
+        }),
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
         success: function (msg) {
