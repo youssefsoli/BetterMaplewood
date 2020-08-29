@@ -1,6 +1,7 @@
 let quickview = document.getElementById('quickview');
 let calculation = document.getElementById('calculation');
 let liveModification = document.getElementById('liveModification');
+let version = document.getElementById('version');
 
 const updateSettings = () => {
     let quickviewToggle = quickview.checked;
@@ -43,3 +44,5 @@ chrome.storage.sync.get(null, (settings) => {
 quickview.onchange = updateSettings;
 calculation.onchange = updateSettings;
 liveModification.onchange = updateSettings;
+
+version.innerText = 'v' + chrome.app.getDetails().version;
