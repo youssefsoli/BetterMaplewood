@@ -68,6 +68,12 @@ const calculateMarks = () => {
     let finalMark = +(calculateLayer(markbook) * 100).toFixed(3);
     let finalMarkSelector = $('#markbookTable > div > div');
 
+    // if there is no mark change, don't display the final mark
+    if (initialFinalMark == finalMark) {
+        finalMarkSelector.text(`Term Mark: ${initialFinalMark}`);
+        return;
+    }
+
     // Display the final grade with the initial grade faded
     finalMarkSelector.text('Term Mark: ');
     finalMarkSelector.append(`<span style="opacity: 0.7;">${initialFinalMark} →</span> ${finalMark}`)
