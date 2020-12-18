@@ -167,6 +167,7 @@ const makeMarkbookEditable = () => {
         if (span) {
             $(span).bind('click', function () {
                 input.show();
+                input.focus();
                 calculateMarks();
                 $(this).remove();
             });
