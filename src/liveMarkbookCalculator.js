@@ -68,7 +68,10 @@ const calculateMarks = () => {
     let finalMark = +(calculateLayer(markbook) * 100).toFixed(3);
     let finalMarkSelector = $('#markbookTable > div > div');
 
-    finalMarkSelector.text(`Term Mark: ${initialFinalMark} → ${finalMark}`); // Display the final grade
+    // Display the final grade with the initial grade faded
+    finalMarkSelector.text('Term Mark: ');
+    finalMarkSelector.append(`<span style="opacity: 0.7;">${initialFinalMark} →</span> ${finalMark}`)
+
     if (!isNaN(initialFinalMark) && initialFinalMark !== finalMark) {
         let difference = +parseFloat(finalMark - initialFinalMark).toFixed(3);
 
