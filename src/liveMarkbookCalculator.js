@@ -16,11 +16,11 @@ const calculateLayer = layer => {
         if (isNaN(mark) || isNaN(weight) || isNaN(markDenom)) // EXC, ABS, and blanks are ignored
             continue;
 
-        if(mark < 0) // Treat negative marks as 0
+        if (mark < 0) // Treat negative marks as 0
             mark = 0;
-        if(weight < 0) // Treat negative weights as 0
+        if (weight < 0) // Treat negative weights as 0
             weight = 0;
-        if(markDenom <= 0) // If the denominator does not make sense, ignore whole grade
+        if (markDenom <= 0) // If the denominator does not make sense, ignore whole grade
             continue;
         denominator += weight;
         sum += (mark / markDenom) * weight;
@@ -68,7 +68,7 @@ const calculateMarks = () => {
     let finalMark = +(calculateLayer(markbook) * 100).toFixed(3);
     let finalMarkSelector = $('#markbookTable > div > div');
 
-    finalMarkSelector.text(`Term Mark: ${initialFinalMark} -> ${finalMark}`); // Display the final grade
+    finalMarkSelector.text(`Term Mark: ${initialFinalMark} → ${finalMark}`); // Display the final grade
     if (!isNaN(initialFinalMark) && initialFinalMark !== finalMark) {
         let difference = +parseFloat(finalMark - initialFinalMark).toFixed(3);
 
