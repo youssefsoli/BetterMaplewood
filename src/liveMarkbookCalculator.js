@@ -260,6 +260,7 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh, st
             $('#MarkbookDialog').dialog('option', 'height', 'auto').dialog('open');
             $('#markbookTable td[mrkTble!=\'1\']').addClass('tdAchievement');
             makeMarkbookEditable();
+            createInitialMarkbook();
         },
         error: function () {
             $('#markbookTable').html('(error loading marbook)');
