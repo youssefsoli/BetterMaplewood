@@ -175,7 +175,12 @@ const makeMarkbookEditable = () => {
     $('#markbookTable table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;} input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0; text-align: center; width: 30pt; background-color: inherit;}</style>');
     initialFinalMark = parseFloat($('#markbookTable > div > div').text().substr(11)); // Grab everything after 'Term Mark: '
     $('#markbookTable table tbody td:nth-child(n+2):nth-child(-n+5):not(:nth-child(3))').each(function () {
-        const value = $(this).text();
+        let value = $(this).text();
+
+        if (!isNaN(parseFloat(value)) && value !== '') {
+            value = +parseFloat(value).toFixed(2);
+        }
+
         let inputHTML = `<input min="0" type="number" value="${value}" />`;
 
         if (isNaN(parseFloat(value)) && value !== '') {
