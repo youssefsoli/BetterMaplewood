@@ -1,4 +1,5 @@
 let initialFinalMark; // Stores the initial final grade
+let initialMarkbook; // Stores the initial markbook
 
 /**
  * @desc Takes in a mark layer and calculates the total mark based off weights and raw score
@@ -143,6 +144,30 @@ const parseMarkbook = () => {
     return markbook;
 };
 
+const createInitialMarkbook = () => {
+    initialMarkbook = [];
+
+    $('#markbookTable table tbody > tr:gt(0)').each(function () {
+        const mark = $(this).find('td:nth-child(2) > input');
+        const weight = $(this).find('td:nth-child(4) > input');
+        const denominator = $(this).find('td:nth-child(5) > input');
+
+        initialMarkbook.push({
+            mark: {
+                val: mark.val(),
+                bgColor: mark.parent().css('background-color')
+            },
+            weight: {
+                val: weight.val(),
+                bgColor: weight.parent().css('background-color')
+            },
+            denominator: {
+                val: denominator.val(),
+                bgColor: denominator.parent().css('background-color')
+            }
+        });
+    });
+};
 /**
  * @desc Converts the current open markbook to an editable format
  */
