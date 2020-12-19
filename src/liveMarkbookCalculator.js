@@ -144,6 +144,9 @@ const parseMarkbook = () => {
     return markbook;
 };
 
+/**
+ * @desc Iterates over the current markbook and stores the mark, weight, and denominator value, as well as background colour, in an array
+ */
 const createInitialMarkbook = () => {
     initialMarkbook = [];
 
@@ -169,6 +172,9 @@ const createInitialMarkbook = () => {
     });
 };
 
+/**
+ * @desc Iterates over the current markbook and highlights changed cells
+ */
 const highlightChanges = () => {
     $('#markbookTable table tbody > tr:gt(0)').each(function (i) {
         const row = $(this);
