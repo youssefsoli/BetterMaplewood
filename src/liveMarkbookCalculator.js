@@ -168,6 +168,34 @@ const createInitialMarkbook = () => {
         });
     });
 };
+
+const highlightChanges = () => {
+    $('#markbookTable table tbody > tr:gt(0)').each(function (i) {
+        const row = $(this);
+
+        const currentMark = row.find('td:nth-child(2) > input');
+        if (currentMark.val() !== initialMarkbook[i].mark.val) {
+            currentMark.parent().css('background-color', '#ffe499');
+        } else {
+            currentMark.parent().css('background-color', initialMarkbook[i].mark.bgColor);
+        }
+
+        const currentWeight = row.find('td:nth-child(4) > input');
+        if (currentWeight.val() !== initialMarkbook[i].weight.val) {
+            currentWeight.parent().css('background-color', '#ffe499');
+        } else {
+            currentWeight.parent().css('background-color', initialMarkbook[i].weight.bgColor);
+        }
+
+        const currentDenominator = row.find('td:nth-child(5) > input');
+        if (currentDenominator.val() !== initialMarkbook[i].denominator.val) {
+            currentDenominator.parent().css('background-color', '#ffe499');
+        } else {
+            currentDenominator.parent().css('background-color', initialMarkbook[i].denominator.bgColor);
+        }
+    });
+};
+
 /**
  * @desc Converts the current open markbook to an editable format
  */
@@ -210,7 +238,7 @@ const makeMarkbookEditable = () => {
         }
         $(input).bind('input', function () {
             calculateMarks();
-            $(this).parent().css('background-color', '#ffe499'); // Change color of cell to indicate it was modified
+            highlightChanges();
         });
     });
 };
