@@ -192,8 +192,8 @@ const makeMarkbookEditable = () => {
                 return; // Ignore other values
 
             // fix background colour styling
-            let rowStyle = $(this).parent().find('td:first').attr('style').split(';')[0] + ';';
-            $(this).attr('style', rowStyle);
+            let rowStyle = $(this).parent().find('td:first').css('background-color');
+            $(this).css('background-color', rowStyle);
         }
 
         $(this).html(inputHTML);
