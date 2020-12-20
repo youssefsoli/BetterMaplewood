@@ -2,7 +2,7 @@ module.exports = {
     'env': {
         'browser': false,
         'es6': true,
-        'jquery': false,
+        'jquery': true,
         'node': true,
         'amd': true
     },
@@ -31,6 +31,12 @@ module.exports = {
         'semi': [
             'error',
             'always'
+        ],
+        'no-undef': [
+            'off'
+        ],
+        'no-unused-vars': [
+            'off'
         ]
     }
 };
