@@ -245,7 +245,7 @@ const makeMarkbookEditable = () => {
                 return; // Ignore other values
 
             // fix background colour styling
-            let rowStyle = $(this).parent().find('td:first').css('background-color');
+            const rowStyle = $(this).parent().find('td:first').css('background-color');
             $(this).css('background-color', rowStyle);
         }
 
@@ -264,9 +264,18 @@ const makeMarkbookEditable = () => {
         
         const margin = $(this).parent().find('td:first > span:first')[0].style['margin-left']; // determines if the row is for an assignment, section, or unit
         const isMarkColumn = $(this).nextAll().length === 3; // the mark column has 3 cells after it
+        
+        let hasChildren;
+        if ($(this).parent().nextAll().length !== 0) { // check if the current row is the last row
+            const nextMargin = $(this).parent().next().find('td:first > span:first')[0].style['margin-left'];
+            hasChildren = margin !== nextMargin;
+        } else {
+            hasChildren = false;
+        }
 
-        // only make assignment marks editable; section and unit marks are dependent on assignments, so their input fields are disabled
-        if (margin !== '40px' && isMarkColumn) {
+        // only assignments and sections/units without children should have their marks editable 
+        // other marks are dependent on the marks of their children so their input fields should be disabled
+        if (margin !== '40px' && isMarkColumn && hasChildren) {
             $(input).prop('disabled', true); // to maintain compatibility with other functions, the input is disabled rather than completely removed
             $(input).css('cursor', 'text'); // give the appearance of regular text
         } else {
