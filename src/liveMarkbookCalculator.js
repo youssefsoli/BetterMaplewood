@@ -1,4 +1,5 @@
 let initialFinalMark; // Stores the initial final grade
+let initialMarkbook; // Stores the initial markbook
 
 /**
  * @desc Takes in a mark layer and calculates the total mark based off weights and raw score
@@ -67,6 +68,12 @@ const calculateMarks = () => {
 
     let finalMark = +(calculateLayer(markbook) * 100).toFixed(3);
     let finalMarkSelector = $('#markbookTable > div > div');
+
+    // if there is no mark change, don't display the final mark
+    if (initialFinalMark == finalMark) {
+        finalMarkSelector.text(`Term Mark: ${initialFinalMark}`);
+        return;
+    }
 
     // Display the final grade with the initial grade faded
     finalMarkSelector.text('Term Mark: ');
@@ -138,13 +145,95 @@ const parseMarkbook = () => {
 };
 
 /**
+ * @desc Iterates over the current markbook and stores the mark, weight, and denominator value, as well as background colour, in an array
+ */
+const createInitialMarkbook = () => {
+    initialMarkbook = [];
+
+    $('#markbookTable table tbody > tr:gt(0)').each(function () {
+        const mark = $(this).find('td:nth-child(2) > input');
+        const weight = $(this).find('td:nth-child(4) > input');
+        const denominator = $(this).find('td:nth-child(5) > input');
+
+        initialMarkbook.push({
+            mark: {
+                val: mark.val(),
+                bgColor: mark.parent().css('background-color')
+            },
+            weight: {
+                val: weight.val(),
+                bgColor: weight.parent().css('background-color')
+            },
+            denominator: {
+                val: denominator.val(),
+                bgColor: denominator.parent().css('background-color')
+            }
+        });
+    });
+};
+
+/**
+ * @desc Iterates over the current markbook and highlights changed cells
+ */
+const highlightChanges = () => {
+    $('#markbookTable table tbody > tr:gt(0)').each(function (i) {
+        const row = $(this);
+
+        const currentMark = row.find('td:nth-child(2) > input');
+        if (currentMark.val() !== initialMarkbook[i].mark.val) {
+            currentMark.parent().css('background-color', '#ffe499');
+        } else {
+            currentMark.parent().css('background-color', initialMarkbook[i].mark.bgColor);
+        }
+
+        const currentWeight = row.find('td:nth-child(4) > input');
+        if (currentWeight.val() !== initialMarkbook[i].weight.val) {
+            currentWeight.parent().css('background-color', '#ffe499');
+        } else {
+            currentWeight.parent().css('background-color', initialMarkbook[i].weight.bgColor);
+        }
+
+        const currentDenominator = row.find('td:nth-child(5) > input');
+        if (currentDenominator.val() !== initialMarkbook[i].denominator.val) {
+            currentDenominator.parent().css('background-color', '#ffe499');
+        } else {
+            currentDenominator.parent().css('background-color', initialMarkbook[i].denominator.bgColor);
+        }
+    });
+};
+
+/**
  * @desc Converts the current open markbook to an editable format
  */
 const makeMarkbookEditable = () => {
-    $('#markbookTable table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;} input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0; text-align: center; width: 30pt; background-color: inherit;}</style>');
+    $('#markbookTable table').prepend(`
+    <style type="text/css">
+        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        } 
+        
+        input[type="number"] {
+            -moz-appearance: textfield; 
+            margin: 0; 
+            border: none; 
+            display: inline; 
+            font-family: Monaco, Courier, monospace; 
+            font-size: inherit; 
+            padding: 0; 
+            text-align: center; 
+            width: 30pt; 
+            background-color: inherit;
+        }
+    </style>`);
     initialFinalMark = parseFloat($('#markbookTable > div > div').text().substr(11)); // Grab everything after 'Term Mark: '
     $('#markbookTable table tbody td:nth-child(n+2):nth-child(-n+5):not(:nth-child(3))').each(function () {
-        const value = $(this).text();
+        let value = $(this).text();
+
+        if (!isNaN(parseFloat(value)) && value !== '') {
+            value = +parseFloat(value).toFixed(2);
+        }
+
         let inputHTML = `<input min="0" type="number" value="${value}" />`;
 
         if (isNaN(parseFloat(value)) && value !== '') {
@@ -154,6 +243,10 @@ const makeMarkbookEditable = () => {
                 inputHTML = `<span>${value}</span><input min="0" type="number" value="" style="display: none;" />`;
             else
                 return; // Ignore other values
+
+            // fix background colour styling
+            const rowStyle = $(this).parent().find('td:first').css('background-color');
+            $(this).css('background-color', rowStyle);
         }
 
         $(this).html(inputHTML);
@@ -163,14 +256,34 @@ const makeMarkbookEditable = () => {
         if (span) {
             $(span).bind('click', function () {
                 input.show();
+                input.focus();
                 calculateMarks();
                 $(this).remove();
             });
         }
-        $(input).bind('input', function () {
-            calculateMarks();
-            $(this).parent().css('background-color', '#ffe499'); // Change color of cell to indicate it was modified
-        });
+        
+        const margin = $(this).parent().find('td:first > span:first')[0].style['margin-left']; // determines if the row is for an assignment, section, or unit
+        const isMarkColumn = $(this).nextAll().length === 3; // the mark column has 3 cells after it
+        
+        let hasChildren;
+        if ($(this).parent().nextAll().length !== 0) { // check if the current row is the last row
+            const nextMargin = $(this).parent().next().find('td:first > span:first')[0].style['margin-left'];
+            hasChildren = margin !== nextMargin;
+        } else {
+            hasChildren = false;
+        }
+
+        // only assignments and sections/units without children should have their marks editable 
+        // other marks are dependent on the marks of their children so their input fields should be disabled
+        if (margin !== '40px' && isMarkColumn && hasChildren) {
+            $(input).prop('disabled', true); // to maintain compatibility with other functions, the input is disabled rather than completely removed
+            $(input).css('cursor', 'text'); // give the appearance of regular text
+        } else {
+            $(input).bind('input', function () {
+                calculateMarks();
+                highlightChanges();
+            });
+        }
     });
 };
 
@@ -224,6 +337,7 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh, st
             $('#MarkbookDialog').dialog('option', 'height', 'auto').dialog('open');
             $('#markbookTable td[mrkTble!=\'1\']').addClass('tdAchievement');
             makeMarkbookEditable();
+            createInitialMarkbook();
         },
         error: function () {
             $('#markbookTable').html('(error loading marbook)');
