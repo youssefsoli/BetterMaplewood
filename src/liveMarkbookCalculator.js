@@ -305,6 +305,26 @@ const addPercentageColumn = () => {
     });
 };
 
+/**
+ * @desc Iterates through the markbook and calculates the percentage for each row
+ */
+const calculatePercentages = () => {
+    $('#markbookTable tr:not(:first)').each(function () {
+        const mark = parseFloat($(this).find('td:nth-child(3) > input').val());
+        const denominator = parseFloat($(this).find('td:nth-child(6) > input').val());
+
+        const percentage = +(mark / denominator * 100).toFixed(2);
+        const percentageCell = $(this).find('td:nth-child(2)');
+
+        // change the percentage cell's value if the percentage is valid, otherwise clear it
+        if (!isNaN(percentage)) {
+            percentageCell.text(percentage);
+        } else {
+            percentageCell.text('');
+        }
+    });
+};
+
 /* Load Markbook Override (Pre-existing function used when a markbook is opened) */
 loadMarkbook = function (studentID, classID, termID, topicID, title, refresh, stuLetters, orgId) {
 
