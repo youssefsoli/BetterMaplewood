@@ -273,6 +273,7 @@ const makeMarkbookEditable = () => {
             $(input).bind('input', function () {
                 calculateMarks();
                 highlightChanges();
+                calculatePercentages();
             });
         }
     });
@@ -374,8 +375,10 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh, st
             $('#markbookTable').html(msg.d);
             $('#MarkbookDialog').dialog('option', 'height', 'auto').dialog('open');
             $('#markbookTable td[mrkTble!=\'1\']').addClass('tdAchievement');
+            addPercentageColumn();
             makeMarkbookEditable();
             createInitialMarkbook();
+            calculatePercentages();
         },
         error: function () {
             $('#markbookTable').html('(error loading marbook)');
