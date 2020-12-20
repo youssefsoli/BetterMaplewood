@@ -261,10 +261,21 @@ const makeMarkbookEditable = () => {
                 $(this).remove();
             });
         }
-        $(input).bind('input', function () {
-            calculateMarks();
-            highlightChanges();
-        });
+        
+        const margin = $(this).parent().find('td:first > span:first')[0].style['margin-left']; // determines if the row is for an assignment, section, or unit
+        const isMarkColumn = $(this).nextAll().length === 3; // the mark column has 3 cells after it
+
+        // only make assignment marks editable; section and unit marks are dependent on assignments, so their input fields are disabled
+        if (margin !== '40px' && isMarkColumn) {
+            $(input).prop('disabled', true); // to maintain compatibility with other functions, the input is disabled rather than completely removed
+            $(input).css('cursor', 'text'); // give the appearance of regular text
+        } else {
+            $(input).bind('input', function () {
+                calculateMarks();
+                highlightChanges();
+                calculatePercentages();
+            });
+        }
     });
 };
 
