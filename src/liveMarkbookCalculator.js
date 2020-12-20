@@ -273,7 +273,6 @@ const makeMarkbookEditable = () => {
             $(input).bind('input', function () {
                 calculateMarks();
                 highlightChanges();
-                calculatePercentages();
             });
         }
     });
