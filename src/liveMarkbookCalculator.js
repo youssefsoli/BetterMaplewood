@@ -278,6 +278,33 @@ const makeMarkbookEditable = () => {
     });
 };
 
+/**
+ * @desc Adds a blank new column to the markbook for displaying percentages
+ */
+const addPercentageColumn = () => {
+    // add percent header
+    $('<td class="mwTABLE_CELL_HEADER tdAchievement" style="font-weight: bold" align="center">Percent</td>').insertAfter('#markbookTable td:first');
+    
+    // narrow assignment name column width
+    $('#markbookTable tr:not(:first)').each(function () {
+        $(this).find('td:first').css('width', '250px');
+    });
+
+    // copy date column (to keep row style) and paste it after the first column
+    $('#markbookTable tr:not(:first)').each(function () {
+        const dateCell = $(this).find('td:nth-child(3)');
+        $(dateCell).clone().insertAfter($(this).find('td:first'));
+    });
+
+    // clear the column of any text and change to font to the same as input boxes
+    $('#markbookTable tr:not(:first) > td:nth-child(2)').each(function () {
+        $(this).text('');
+        $(this).css({
+            'font-family': 'Monaco, Courier, monospace'
+        });
+    });
+};
+
 /* Load Markbook Override (Pre-existing function used when a markbook is opened) */
 loadMarkbook = function (studentID, classID, termID, topicID, title, refresh, stuLetters, orgId) {
 
