@@ -29,9 +29,9 @@ const calculateLayer = layer => {
         /* Update the mark display */
         let row = layer[i].row;
         if (row) {
-            row.find('td:nth-child(3) > input').val(+mark.toFixed(2));
-            row.find('td:nth-child(5) > input').val(weight);
-            row.find('td:nth-child(6) > input').val(markDenom);
+            row.find('td:nth-last-child(4) > input').val(+mark.toFixed(2));
+            row.find('td:nth-last-child(2) > input').val(weight);
+            row.find('td:nth-last-child(1) > input').val(markDenom);
         }
     }
 
@@ -47,12 +47,12 @@ const calculateMarks = () => {
     for (let i = 0; i < markbook.length; i++) {
         let middle = markbook[i].children;
 
-        if ((isNaN(parseFloat(markbook[i].mark)) && markbook[i].mark !== '') || markbook[i].row.find('td:nth-child(3) > input').is(':hidden')) // Make sure top isn't already invalid or hidden
+        if ((isNaN(parseFloat(markbook[i].mark)) && markbook[i].mark !== '') || markbook[i].row.find('td:nth-last-child(4) > input').is(':hidden')) // Make sure top isn't already invalid or hidden
             continue;
 
         if (middle && middle.length) { // Make sure there is a middle layer to handle
             for (let j = 0; j < middle.length; j++) {
-                if ((isNaN(parseFloat(middle[j].mark)) && middle[j].mark !== '') || middle[j].row.find('td:nth-child(3) > input').is(':hidden')) // Make sure middle isn't already invalid or hidden
+                if ((isNaN(parseFloat(middle[j].mark)) && middle[j].mark !== '') || middle[j].row.find('td:nth-last-child(4) > input').is(':hidden')) // Make sure middle isn't already invalid or hidden
                     continue;
 
                 let bottom = middle[j].children;
@@ -102,9 +102,9 @@ const parseMarkbook = () => {
         switch (margin) {
             case '0px': {
                 markbook.push({
-                    mark: row.find('td:nth-child(3) > input').val(),
-                    weight: row.find('td:nth-child(5) > input').val(),
-                    denominator: row.find('td:nth-child(6) > input').val(),
+                    mark: row.find('td:nth-last-child(4) > input').val(),
+                    weight: row.find('td:nth-last-child(2) > input').val(),
+                    denominator: row.find('td:nth-last-child(1) > input').val(),
                     children: [],
                     row: row
                 });
@@ -112,9 +112,9 @@ const parseMarkbook = () => {
             }
             case '20px': {
                 markbook[markbook.length - 1].children.push({ // Push a middle row into the latest top level
-                    mark: row.find('td:nth-child(3) > input').val(),
-                    weight: row.find('td:nth-child(5) > input').val(),
-                    denominator: row.find('td:nth-child(6) > input').val(),
+                    mark: row.find('td:nth-last-child(4) > input').val(),
+                    weight: row.find('td:nth-last-child(2) > input').val(),
+                    denominator: row.find('td:nth-last-child(1) > input').val(),
                     children: [],
                     row: row
                 });
@@ -129,9 +129,9 @@ const parseMarkbook = () => {
                 }
 
                 middle.push({
-                    mark: row.find('td:nth-child(3) > input').val(),
-                    weight: row.find('td:nth-child(5) > input').val(),
-                    denominator: row.find('td:nth-child(6) > input').val(),
+                    mark: row.find('td:nth-last-child(4) > input').val(),
+                    weight: row.find('td:nth-last-child(2) > input').val(),
+                    denominator: row.find('td:nth-last-child(1) > input').val(),
                     row: row
                 });
                 break;
@@ -151,9 +151,9 @@ const createInitialMarkbook = () => {
     initialMarkbook = [];
 
     $('#markbookTable table tbody > tr:gt(0)').each(function () {
-        const mark = $(this).find('td:nth-child(3) > input');
-        const weight = $(this).find('td:nth-child(5) > input');
-        const denominator = $(this).find('td:nth-child(6) > input');
+        const mark = $(this).find('td:nth-last-child(4) > input');
+        const weight = $(this).find('td:nth-last-child(2) > input');
+        const denominator = $(this).find('td:nth-last-child(1) > input');
 
         initialMarkbook.push({
             mark: {
@@ -179,21 +179,21 @@ const highlightChanges = () => {
     $('#markbookTable table tbody > tr:gt(0)').each(function (i) {
         const row = $(this);
 
-        const currentMark = row.find('td:nth-child(3) > input');
+        const currentMark = row.find('td:nth-last-child(4) > input');
         if (currentMark.val() !== initialMarkbook[i].mark.val) {
             currentMark.parent().css('background-color', '#ffe499');
         } else {
             currentMark.parent().css('background-color', initialMarkbook[i].mark.bgColor);
         }
 
-        const currentWeight = row.find('td:nth-child(5) > input');
+        const currentWeight = row.find('td:nth-last-child(2) > input');
         if (currentWeight.val() !== initialMarkbook[i].weight.val) {
             currentWeight.parent().css('background-color', '#ffe499');
         } else {
             currentWeight.parent().css('background-color', initialMarkbook[i].weight.bgColor);
         }
 
-        const currentDenominator = row.find('td:nth-child(6) > input');
+        const currentDenominator = row.find('td:nth-last-child(1) > input');
         if (currentDenominator.val() !== initialMarkbook[i].denominator.val) {
             currentDenominator.parent().css('background-color', '#ffe499');
         } else {
@@ -226,8 +226,10 @@ const makeMarkbookEditable = () => {
             background-color: inherit;
         }
     </style>`);
+    
     initialFinalMark = parseFloat($('#markbookTable > div > div').text().substr(11)); // Grab everything after 'Term Mark: '
-    $('#markbookTable table tbody td:nth-child(n+3):nth-child(-n+6):not(:nth-child(4))').each(function () {
+    
+    $('#markbookTable table tbody td:nth-last-child(-n+4):not(:nth-last-child(3))').each(function () {
         let value = $(this).text();
 
         if (!isNaN(parseFloat(value)) && value !== '') {
@@ -302,11 +304,11 @@ const addPercentageColumn = () => {
 
     // copy date column (to keep row style) and paste it after the first column
     $('#markbookTable tr:not(:first)').each(function () {
-        const dateCell = $(this).find('td:nth-child(3)');
+        const dateCell = $(this).find('td:nth-last-child(3)');
         $(dateCell).clone().insertAfter($(this).find('td:first'));
     });
 
-    // clear the column of any text and change to font to the same as input boxes
+    // clear the column of any text and change the font to the same as input boxes
     $('#markbookTable tr:not(:first) > td:nth-child(2)').each(function () {
         $(this).text('');
         $(this).css({
@@ -320,8 +322,8 @@ const addPercentageColumn = () => {
  */
 const calculatePercentages = () => {
     $('#markbookTable tr:not(:first)').each(function () {
-        const mark = parseFloat($(this).find('td:nth-child(3) > input').val());
-        const denominator = parseFloat($(this).find('td:nth-child(6) > input').val());
+        const mark = parseFloat($(this).find('td:nth-last-child(4) > input').val());
+        const denominator = parseFloat($(this).find('td:nth-last-child(1) > input').val());
 
         const percentage = +(mark / denominator * 100).toFixed(2);
         const percentageCell = $(this).find('td:nth-child(2)');
