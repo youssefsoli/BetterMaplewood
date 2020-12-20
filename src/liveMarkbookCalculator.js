@@ -77,7 +77,7 @@ const calculateMarks = () => {
 
     // Display the final grade with the initial grade faded
     finalMarkSelector.text('Term Mark: ');
-    finalMarkSelector.append(`<span style="opacity: 0.7;">${initialFinalMark} →</span> ${finalMark}`)
+    finalMarkSelector.append(`<span style="opacity: 0.7;">${initialFinalMark} →</span> ${finalMark}`);
 
     if (!isNaN(initialFinalMark) && initialFinalMark !== finalMark) {
         let difference = +parseFloat(finalMark - initialFinalMark).toFixed(3);
@@ -205,7 +205,7 @@ const highlightChanges = () => {
 /**
  * @desc Converts the current open markbook to an editable format
  */
-const makeMarkbookEditable = () => {
+const makeMarkbookEditable = percentageColumnIsEnabled => {
     $('#markbookTable table').prepend(`
     <style type="text/css">
         input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
@@ -284,7 +284,8 @@ const makeMarkbookEditable = () => {
             $(input).bind('input', function () {
                 calculateMarks();
                 highlightChanges();
-                calculatePercentages();
+                if (percentageColumnIsEnabled)
+                    calculatePercentages();
             });
         }
     });
@@ -339,10 +340,13 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh, st
             $('#markbookTable').html(msg.d);
             $('#MarkbookDialog').dialog('option', 'height', 'auto').dialog('open');
             $('#markbookTable td[mrkTble!=\'1\']').addClass('tdAchievement');
-            addPercentageColumn();
-            makeMarkbookEditable();
+            const percentageColumnIsEnabled = settings.percentageColumn;
+            makeMarkbookEditable(percentageColumnIsEnabled);
             createInitialMarkbook();
-            calculatePercentages();
+            if (percentageColumnIsEnabled) {
+                addPercentageColumn();
+                calculatePercentages();
+            }
         },
         error: function () {
             $('#markbookTable').html('(error loading marbook)');

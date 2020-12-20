@@ -1,11 +1,14 @@
 const scriptList = {
     calculation: {
-        file: "src/averageCalculator.js",
+        file: 'src/averageCalculator.js',
         enabled: true
     },
-
+    percentageColumn: { // must be before liveModification because of function dependencies
+        file: 'src/percentages.js',
+        enabled: true
+    },
     liveModification: {
-        file: "src/liveMarkbookCalculator.js",
+        file: 'src/liveMarkbookCalculator.js',
         enabled: true
     }
 };
@@ -17,7 +20,7 @@ const injectScript = name => {
     script.onload = () => {
         script.parentNode.removeChild(script); // Script removes itself off the page once loaded
     };
-}
+};
 
 const injectSettings = settings => {
     let script = document.createElement('script'); // Create a script element
@@ -26,7 +29,7 @@ const injectSettings = settings => {
     script.onload = () => {
         script.parentNode.removeChild(script); // Script removes itself off the page once loaded
     };
-}
+};
 
 const injectScriptList = scriptList => {
     chrome.storage.sync.get(null, settings => {
@@ -38,12 +41,15 @@ const injectScriptList = scriptList => {
 
         if (!settings.liveModification)
             scriptList.liveModification.enabled = false; // Disable the script from loading
+        
+        if (!settings.percentageColumn)
+            scriptList.percentageColumn.enabled = false; // Disable the script from loading
 
         Object.keys(scriptList).forEach(script => {
             if (scriptList[script].enabled)
                 injectScript(scriptList[script].file);
         });
     });
-}
+};
 
 injectScriptList(scriptList);
