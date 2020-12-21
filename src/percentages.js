@@ -38,7 +38,7 @@ const calculatePercentages = () => {
 
         // change the percentage cell's value if the percentage is valid, otherwise clear it
         if (!isNaN(percentage)) {
-            percentageCell.text(percentage);
+            percentageCell.text(percentage + '%');
         } else {
             percentageCell.text('');
         }
