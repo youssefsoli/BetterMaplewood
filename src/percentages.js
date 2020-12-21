@@ -30,11 +30,11 @@ const addPercentageColumn = () => {
  */
 const calculatePercentages = () => {
     $('#markbookTable tr:not(:first)').each(function () {
-        const mark = parseFloat($(this).find('td:nth-last-child(4) > input').val());
-        const denominator = parseFloat($(this).find('td:nth-last-child(1) > input').val());
+        const mark = parseFloat($(this).find('td:nth-child(2) > input').val());
+        const denominator = parseFloat($(this).find('td:nth-child(5) > input').val());
 
         const percentage = +(mark / denominator * 100).toFixed(2);
-        const percentageCell = $(this).find('td:nth-child(2)');
+        const percentageCell = $(this).find('td:nth-child(6)');
 
         // change the percentage cell's value if the percentage is valid, otherwise clear it
         if (!isNaN(percentage)) {

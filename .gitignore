@@ -5,3 +5,6 @@ TODO
 # IntelliJ files
 /.idea
 /node_modules
+
+# Other
+.DS_Store
