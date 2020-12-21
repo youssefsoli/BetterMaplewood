@@ -2,14 +2,13 @@ let quickview = document.getElementById('quickview');
 let calculation = document.getElementById('calculation');
 let liveModification = document.getElementById('liveModification');
 let percentageColumn = document.getElementById('percentageColumn');
-let settings;
 
 const updateSettings = () => {
     let quickviewToggle = quickview.checked;
     let calculationToggle = calculation.checked;
     let liveModificationToggle = liveModification.checked;
     let percentageColumnToggle = percentageColumn.checked;
-    settings = {
+    let settings = {
         quickview: quickviewToggle,
         calculation: calculationToggle,
         liveModification: liveModificationToggle,
