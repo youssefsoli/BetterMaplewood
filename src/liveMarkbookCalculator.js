@@ -205,7 +205,7 @@ const highlightChanges = () => {
 /**
  * @desc Converts the current open markbook to an editable format
  */
-const makeMarkbookEditable = percentageColumnIsEnabled => {
+const makeMarkbookEditable = () => {
     $('#markbookTable table').prepend(`
     <style type="text/css">
         input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
@@ -284,7 +284,7 @@ const makeMarkbookEditable = percentageColumnIsEnabled => {
             $(input).bind('input', function () {
                 calculateMarks();
                 highlightChanges();
-                if (percentageColumnIsEnabled)
+                if (settings.percentageColumn)
                     calculatePercentages();
             });
         }
@@ -340,10 +340,9 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh, st
             $('#markbookTable').html(msg.d);
             $('#MarkbookDialog').dialog('option', 'height', 'auto').dialog('open');
             $('#markbookTable td[mrkTble!=\'1\']').addClass('tdAchievement');
-            const percentageColumnIsEnabled = settings.percentageColumn;
-            makeMarkbookEditable(percentageColumnIsEnabled);
+            makeMarkbookEditable();
             createInitialMarkbook();
-            if (percentageColumnIsEnabled) {
+            if (settings.percentageColumn) {
                 addPercentageColumn();
                 calculatePercentages();
             }
