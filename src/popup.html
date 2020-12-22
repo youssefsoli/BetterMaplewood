@@ -1,4 +1,4 @@
-﻿<html lang="en">
+<html lang="en">
 
 <head>
     <title>BetterMaplewood</title>
@@ -21,43 +21,46 @@
             font-size: 75%;
         }
 
-        a:link,
-        a:visited,
-        a:active,
-        a:hover {
-            text-decoration: none;
+        .footer {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .shadow {
+            color: dimgray;
+            display: block;
         }
     </style>
 </head>
 
 <body style="width: 250px;">
-    <a href="https://hosting.maplewood.com/AB/Private/WA/WA/Maplewood/connectEd/viewer/login/login.aspx?logintype=S" target="_blank">
-        <div style=" margin-bottom: 10px;">
-            <img class="center" src="../img/icon32.png">
-            <h3 class="title">BetterMaplewood</h3>
-        </div>
-    </a>
-    <hr>
-    <div>
-        <input checked data-size="mini" data-toggle="toggle" id="quickview" type="checkbox">
-        <label for="quickview">Enable mark quickview</label>
-    </div>
-    <div>
-        <input checked data-size="mini" data-toggle="toggle" id="calculation" type="checkbox">
-        <label for="calculation">Enable average calculation</label>
-    </div>
-    <div>
-        <input checked data-size="mini" data-toggle="toggle" id="liveModification" type="checkbox">
-        <label for="liveModification">Enable live mark modification</label>
-    </div>
-    <div>
-        <input checked data-size="mini" data-toggle="toggle" id="percentageColumn" type="checkbox">
-        <label for="percentageColumn">Enable percentage column</label>
-    </div>
-    <hr>
-    <div style="text-align: center; margin-top: 15px;">Created with ❤️ by Youssef Soliman</div>
-    <div style="text-align: center; margin-top: 5px; margin-bottom: 15px; padding-right: 7px;">Made <em>better</em> by Michael Xu</div>
-    <script src="popup.js"></script>
+<div style="margin-bottom: 10px;">
+    <img class="center" src="../img/icon32.png">
+    <h3 class="title">BetterMaplewood</h3>
+</div>
+<hr>
+<div>
+    <input checked data-size="mini" data-toggle="toggle" id="quickview" type="checkbox">
+    <label for="quickview">Enable mark quickview</label>
+</div>
+<div>
+    <input checked data-size="mini" data-toggle="toggle" id="calculation" type="checkbox">
+    <label for="calculation">Enable average calculation</label>
+</div>
+<div>
+    <input checked data-size="mini" data-toggle="toggle" id="liveModification" type="checkbox">
+    <label for="liveModification">Enable live mark modification</label>
+</div>
+<div>
+    <input checked data-size="mini" data-toggle="toggle" id="percentageColumn" type="checkbox">
+    <label for="percentageColumn">Enable percentage column</label>
+</div>
+<hr>
+<div class="footer">
+    Created with ❤️ by Youssef Soliman
+    <span class="shadow" id="version"></span>
+</div>
+<script src="popup.js"></script>
 </body>
 
 </html>

@@ -2,6 +2,7 @@ let quickview = document.getElementById('quickview');
 let calculation = document.getElementById('calculation');
 let liveModification = document.getElementById('liveModification');
 let percentageColumn = document.getElementById('percentageColumn');
+let version = document.getElementById('version');
 
 const updateSettings = () => {
     let quickviewToggle = quickview.checked;
@@ -49,3 +50,4 @@ quickview.onchange = updateSettings;
 calculation.onchange = updateSettings;
 liveModification.onchange = updateSettings;
 percentageColumn.onchange = updateSettings;
+version.innerText = 'v' + chrome.app.getDetails().version;
