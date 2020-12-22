@@ -50,4 +50,4 @@ quickview.onchange = updateSettings;
 calculation.onchange = updateSettings;
 liveModification.onchange = updateSettings;
 percentageColumn.onchange = updateSettings;
-version.innerText = 'v' + chrome.app.getDetails().version;
+version.innerText = 'v' + (chrome.app ? chrome.app.getDetails().version : browser.runtime.getManifest().version);
