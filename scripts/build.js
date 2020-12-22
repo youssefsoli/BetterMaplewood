@@ -1,7 +1,8 @@
 const archiver = require('archiver');
 const fs = require('fs');
+const manifest = require('../manifest.json');
 
-const packExtension = (zipName, manifestName) => {
+const packExtension = (zipName, firefox = false) => {
     let file = fs.createWriteStream(__dirname + '/../build/' + zipName);
     let archive = archiver('zip', {
         zlib: {level: 9}
@@ -17,15 +18,24 @@ const packExtension = (zipName, manifestName) => {
 
     archive.pipe(file);
 
-    archive.directory(__dirname + '/../src', 'src');
-    archive.directory(__dirname + '/../img', 'img');
+    archive.directory(__dirname + '/../src', 'src', {});
+    archive.directory(__dirname + '/../img', 'img', {});
     archive.file(__dirname + '/../injector.js', {name: 'injector.js'});
     archive.file(__dirname + '/../LICENSE', {name: 'LICENSE'});
-    archive.file(__dirname + '/../' + manifestName, {name: 'manifest.json'});
+    if (firefox) {
+        let firefoxManifest = manifest;
+        firefoxManifest['browser_specific_settings'] = {
+            'gecko': {
+                'id': '{b50c1372-c516-4876-bbc8-c6143d1df859}'
+            }
+        };
+        archive.append(JSON.stringify(firefoxManifest), {name: 'manifest.json'});
+    } else
+        archive.append(JSON.stringify(manifest), {name: 'manifest.json'});
 
     archive.finalize();
 };
 
 console.log('Starting package process\n');
-packExtension('chrome.zip', 'manifest.json');
-packExtension('firefox.zip', 'manifest_firefox.json');
+packExtension('chrome.zip');
+packExtension('firefox.zip', true);
