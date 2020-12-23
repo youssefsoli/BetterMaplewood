@@ -77,7 +77,7 @@ const calculateMarks = () => {
 
     // Display the final grade with the initial grade faded
     finalMarkSelector.text('Term Mark: ');
-    finalMarkSelector.append(`<span style="opacity: 0.7;">${initialFinalMark} →</span> ${finalMark}`)
+    finalMarkSelector.append(`<span style="opacity: 0.7;">${initialFinalMark} →</span> ${finalMark}`);
 
     if (!isNaN(initialFinalMark) && initialFinalMark !== finalMark) {
         let difference = +parseFloat(finalMark - initialFinalMark).toFixed(3);
@@ -226,7 +226,9 @@ const makeMarkbookEditable = () => {
             background-color: inherit;
         }
     </style>`);
+    
     initialFinalMark = parseFloat($('#markbookTable > div > div').text().substr(11)); // Grab everything after 'Term Mark: '
+    
     $('#markbookTable table tbody td:nth-child(n+2):nth-child(-n+5):not(:nth-child(3))').each(function () {
         let value = $(this).text();
 
@@ -282,6 +284,8 @@ const makeMarkbookEditable = () => {
             $(input).bind('input', function () {
                 calculateMarks();
                 highlightChanges();
+                if (settings.percentageColumn)
+                    calculatePercentages();
             });
         }
     });
@@ -338,6 +342,10 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh, st
             $('#markbookTable td[mrkTble!=\'1\']').addClass('tdAchievement');
             makeMarkbookEditable();
             createInitialMarkbook();
+            if (settings.percentageColumn) {
+                addPercentageColumn();
+                calculatePercentages();
+            }
         },
         error: function () {
             $('#markbookTable').html('(error loading marbook)');
