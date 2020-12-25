@@ -24,6 +24,7 @@
         "src/liveMarkbookCalculator.js",
         "src/percentages.js",
         "src/betterTableLayout.js",
+        "src/selectors.js",
         "src/fixBgColor.js"
     ],
     "browser_action": {

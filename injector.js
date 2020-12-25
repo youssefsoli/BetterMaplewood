@@ -7,6 +7,10 @@ const scriptList = {
         file: 'src/loadMarkbook.js',
         enabled: true
     },
+    selectors: {
+        file: 'src/selectors.js',
+        enabled: true
+    },
     liveModification: {
         file: 'src/liveMarkbookCalculator.js',
         enabled: true

@@ -19,12 +19,9 @@ const addPercentages = () => {
         $(cell).clone().insertAfter($(this).find(insertLocation));
     });
 
-    // clear the column of any text and change the font to the same as input boxes
-    $('#markbookTable tr:not(:first) > td:nth-child(6)').each(function () {
-        $(this).text('');
-        $(this).css({
-            'font-family': 'Monaco, Courier, monospace'
-        });
+    // clear the column of any text
+    $('#markbookTable tr:not(:first)').each(function () {
+        $(this).find(selectors.percentage).text('');
     });
 };
 
@@ -33,11 +30,17 @@ const addPercentages = () => {
  */
 const calculatePercentages = () => {
     $('#markbookTable tr:not(:first)').each(function () {
-        const mark = parseFloat($(this).find('td:nth-child(2) > input').val());
-        const denominator = parseFloat($(this).find('td:nth-child(5) > input').val());
+        let mark, denominator;
+        if (settings.liveModification) {
+            mark = parseFloat($(this).find(selectors.mark).val());
+            denominator = parseFloat($(this).find(selectors.denominator).val());
+        } else {
+            mark = parseFloat($(this).find(selectors.mark).text());
+            denominator = parseFloat($(this).find(selectors.denominator).text());
+        }
 
         const percentage = +(mark / denominator * 100).toFixed(2);
-        const percentageCell = $(this).find('td:nth-child(6)');
+        const percentageCell = $(this).find(selectors.percentage);
 
         // change the percentage cell's value if the percentage is valid, otherwise clear it
         if (!isNaN(percentage)) {

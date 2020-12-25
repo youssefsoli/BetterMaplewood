@@ -29,9 +29,9 @@ const calculateLayer = layer => {
         /* Update the mark display */
         let row = layer[i].row;
         if (row) {
-            row.find('td:nth-child(2) > input').val(+mark.toFixed(2));
-            row.find('td:nth-child(4) > input').val(weight);
-            row.find('td:nth-child(5) > input').val(markDenom);
+            row.find(selectors.mark).val(+mark.toFixed(2));
+            row.find(selectors.weight).val(weight);
+            row.find(selectors.denominator).val(markDenom);
         }
     }
 
@@ -47,12 +47,12 @@ const calculateMarks = () => {
     for (let i = 0; i < markbook.length; i++) {
         let middle = markbook[i].children;
 
-        if ((isNaN(parseFloat(markbook[i].mark)) && markbook[i].mark !== '') || markbook[i].row.find('td:nth-child(2) > input').is(':hidden')) // Make sure top isn't already invalid or hidden
+        if ((isNaN(parseFloat(markbook[i].mark)) && markbook[i].mark !== '') || markbook[i].row.find(selectors.mark).is(':hidden')) // Make sure top isn't already invalid or hidden
             continue;
 
         if (middle && middle.length) { // Make sure there is a middle layer to handle
             for (let j = 0; j < middle.length; j++) {
-                if ((isNaN(parseFloat(middle[j].mark)) && middle[j].mark !== '') || middle[j].row.find('td:nth-child(2) > input').is(':hidden')) // Make sure middle isn't already invalid or hidden
+                if ((isNaN(parseFloat(middle[j].mark)) && middle[j].mark !== '') || middle[j].row.find(selectors.mark).is(':hidden')) // Make sure middle isn't already invalid or hidden
                     continue;
 
                 let bottom = middle[j].children;
@@ -102,9 +102,9 @@ const parseMarkbook = () => {
         switch (margin) {
             case '0px': {
                 markbook.push({
-                    mark: row.find('td:nth-child(2) > input').val(),
-                    weight: row.find('td:nth-child(4) > input').val(),
-                    denominator: row.find('td:nth-child(5) > input').val(),
+                    mark: row.find(selectors.mark).val(),
+                    weight: row.find(selectors.weight).val(),
+                    denominator: row.find(selectors.denominator).val(),
                     children: [],
                     row: row
                 });
@@ -112,9 +112,9 @@ const parseMarkbook = () => {
             }
             case '20px': {
                 markbook[markbook.length - 1].children.push({ // Push a middle row into the latest top level
-                    mark: row.find('td:nth-child(2) > input').val(),
-                    weight: row.find('td:nth-child(4) > input').val(),
-                    denominator: row.find('td:nth-child(5) > input').val(),
+                    mark: row.find(selectors.mark).val(),
+                    weight: row.find(selectors.weight).val(),
+                    denominator: row.find(selectors.denominator).val(),
                     children: [],
                     row: row
                 });
@@ -129,9 +129,9 @@ const parseMarkbook = () => {
                 }
 
                 middle.push({
-                    mark: row.find('td:nth-child(2) > input').val(),
-                    weight: row.find('td:nth-child(4) > input').val(),
-                    denominator: row.find('td:nth-child(5) > input').val(),
+                    mark: row.find(selectors.mark).val(),
+                    weight: row.find(selectors.weight).val(),
+                    denominator: row.find(selectors.denominator).val(),
                     row: row
                 });
                 break;
@@ -179,21 +179,21 @@ const highlightChanges = () => {
     $('#markbookTable table tbody > tr:gt(0)').each(function (i) {
         const row = $(this);
 
-        const currentMark = row.find('td:nth-child(2) > input');
+        const currentMark = row.find(selectors.mark);
         if (currentMark.val() !== initialMarkbook[i].mark.val) {
             currentMark.parent().css('background-color', '#ffe499');
         } else {
             currentMark.parent().css('background-color', initialMarkbook[i].mark.bgColor);
         }
 
-        const currentWeight = row.find('td:nth-child(4) > input');
+        const currentWeight = row.find(selectors.weight);
         if (currentWeight.val() !== initialMarkbook[i].weight.val) {
             currentWeight.parent().css('background-color', '#ffe499');
         } else {
             currentWeight.parent().css('background-color', initialMarkbook[i].weight.bgColor);
         }
 
-        const currentDenominator = row.find('td:nth-child(5) > input');
+        const currentDenominator = row.find(selectors.denominator);
         if (currentDenominator.val() !== initialMarkbook[i].denominator.val) {
             currentDenominator.parent().css('background-color', '#ffe499');
         } else {
