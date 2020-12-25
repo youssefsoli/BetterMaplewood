@@ -52,6 +52,10 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh, st
             if (settings.liveModification) {
                 makeMarkbookEditable();
                 createInitialMarkbook();
+            }
+            if (settings.betterTableLayout) {
+                betterTableLayout();
+            }
             if (settings.percentages) {
                 addPercentages();
                 calculatePercentages();
