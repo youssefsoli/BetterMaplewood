@@ -11,6 +11,10 @@ const scriptList = {
         file: 'src/liveMarkbookCalculator.js',
         enabled: true
     },
+    betterTableLayout: {
+        file: 'src/betterTableLayout.js',
+        enabled: true
+    },
     percentages: {
         file: 'src/percentages.js',
         enabled: true
@@ -53,6 +57,9 @@ const injectScriptList = scriptList => {
         if (!settings.percentages)
             scriptList.percentages.enabled = false; // Disable the script from loading
 
+        if (!settings.betterTableLayout)
+            scriptList.betterTableLayout.enabled = false;
+        
         Object.keys(scriptList).forEach(script => {
             if (scriptList[script].enabled)
                 injectScript(scriptList[script].file);
