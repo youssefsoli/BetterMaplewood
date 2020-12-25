@@ -208,6 +208,13 @@ const highlightChanges = () => {
 const makeMarkbookEditable = () => {
     $('#markbookTable table').prepend(`
     <style type="text/css">
+        .textMark {
+            display: inline-block;
+            width: 30pt;
+            padding-left: 3pt;
+            padding-right: 3pt; 
+        }
+
         input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
@@ -224,6 +231,9 @@ const makeMarkbookEditable = () => {
             text-align: center; 
             width: 30pt; 
             background-color: inherit;
+            border-radius: 3pt;
+            padding-left: 3pt;
+            padding-right: 3pt;
         }
     </style>`);
     
@@ -240,9 +250,9 @@ const makeMarkbookEditable = () => {
 
         if (isNaN(parseFloat(value)) && value !== '') {
             if (value === 'NHI' || value === 'INC')
-                inputHTML = `<span>${value}</span><input min="0" type="number" value="0" style="display: none;" />`;
+                inputHTML = `<span class="textMark">${value}</span><input min="0" type="number" value="0" style="display: none;" />`;
             else if (value === 'EXC' || value === 'ABS' || value === 'COL') // EXC and ABS
-                inputHTML = `<span>${value}</span><input min="0" type="number" value="" style="display: none;" />`;
+                inputHTML = `<span class="textMark">${value}</span><input min="0" type="number" value="" style="display: none;" />`;
             else
                 return; // Ignore other values
         }
