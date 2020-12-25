@@ -52,17 +52,21 @@ const injectScriptList = scriptList => {
 
         injectSettings(settings); // Give the DOM access to settings
 
+        // Disable scripts from loading if they are not needed
         if (!settings.calculation && !settings.quickview)
-            scriptList.calculation.enabled = false; // Disable the script from loading
+            scriptList.calculation.enabled = false; 
 
         if (!settings.liveModification)
-            scriptList.liveModification.enabled = false; // Disable the script from loading
+            scriptList.liveModification.enabled = false; 
         
         if (!settings.percentages)
-            scriptList.percentages.enabled = false; // Disable the script from loading
+            scriptList.percentages.enabled = false; 
 
         if (!settings.betterTableLayout)
             scriptList.betterTableLayout.enabled = false;
+        
+        if (!settings.percentages && !settings.betterTableLayout)
+            scriptList.selectors.enabled = false;
         
         Object.keys(scriptList).forEach(script => {
             if (scriptList[script].enabled)
