@@ -2,18 +2,21 @@
  * @desc Adds a blank new column to the markbook for displaying percentages
  */
 const addPercentages = () => {
+    const insertLocation = settings.betterTableLayout ? 'td:first' : 'td:last';
+    
     // add percent header
-    $('<td class="mwTABLE_CELL_HEADER tdAchievement" style="font-weight: bold" align="center">Percent</td>').insertAfter('#markbookTable tr:first td:last');
+    $('<td class="mwTABLE_CELL_HEADER tdAchievement" style="font-weight: bold" align="center">Percent</td>').insertAfter(`#markbookTable tr:first ${insertLocation}`);
     
     // narrow assignment name column width
     $('#markbookTable tr:not(:first)').each(function () {
-        $(this).find('td:first').css('width', '250px');
+        const newWidth = settings.betterTableLayout ? '280px' : '250px';
+        $(this).find('td:first').css('width', newWidth);
     });
 
-    // copy end column (to keep row style) and paste it after the last column
+    // copy end column (to keep row style) and paste it after the last column or second column depending on whether the better table layout is enabled
     $('#markbookTable tr:not(:first)').each(function () {
-        const cell = $(this).find('td:nth-last-child(1)');
-        $(cell).clone().insertAfter($(this).find('td:last'));
+        const cell = $(this).find('td:last');
+        $(cell).clone().insertAfter($(this).find(insertLocation));
     });
 
     // clear the column of any text and change the font to the same as input boxes
