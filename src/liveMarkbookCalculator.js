@@ -261,7 +261,7 @@ const makeMarkbookEditable = () => {
         }
         
         const margin = $(this).parent().find('td:first > span:first')[0].style['margin-left']; // determines if the row is for an assignment, section, or unit
-        const isMarkColumn = $(this).nextAll().length === 3; // the mark column has 3 cells after it
+        const isTargetColumn = $(this).nextAll().length === 3 || $(this).nextAll().length === 0; // the mark column has 3 cells after it and the denominator column has 0
         
         let hasChildren;
         if ($(this).parent().nextAll().length !== 0) { // check if the current row is the last row
@@ -271,9 +271,9 @@ const makeMarkbookEditable = () => {
             hasChildren = false;
         }
 
-        // only assignments and sections/units without children should have their marks editable 
+        // only assignments and sections/units without children should have their marks and denominators editable 
         // other marks are dependent on the marks of their children so their input fields should be disabled
-        if (margin !== '40px' && isMarkColumn && hasChildren) {
+        if (margin !== '40px' && isTargetColumn && hasChildren) {
             $(input).prop('disabled', true); // to maintain compatibility with other functions, the input is disabled rather than completely removed
             $(input).css('cursor', 'text'); // give the appearance of regular text
         } else {
