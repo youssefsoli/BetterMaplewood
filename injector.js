@@ -3,8 +3,8 @@ const scriptList = {
         file: 'src/averageCalculator.js',
         enabled: true
     },
-    percentageColumn: { // must be before liveModification because of function dependencies
-        file: 'src/percentages.js',
+    loadMarkbook: {
+        file: 'src/loadMarkbook.js',
         enabled: true
     },
     liveModification: {
