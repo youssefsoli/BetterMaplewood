@@ -47,6 +47,7 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh, st
             $('#markbookTable').html(msg.d);
             $('#MarkbookDialog').dialog('option', 'height', 'auto').dialog('open');
             $('#markbookTable td[mrkTble!=\'1\']').addClass('tdAchievement');
+            fixBgColor();
             makeMarkbookEditable();
             createInitialMarkbook();
             if (settings.percentageColumn) {

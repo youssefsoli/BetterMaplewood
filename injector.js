@@ -10,6 +10,10 @@ const scriptList = {
     liveModification: {
         file: 'src/liveMarkbookCalculator.js',
         enabled: true
+    },
+    fixBgColor: {
+        file: 'src/fixBgColor.js',
+        enabled: true
     }
 };
 

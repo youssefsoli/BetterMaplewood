@@ -21,7 +21,7 @@
     "web_accessible_resources": [
         "src/averageCalculator.js",
         "src/liveMarkbookCalculator.js",
-        "src/percentages.js"
+        "src/fixBgColor.js"
     ],
     "browser_action": {
         "default_title": "BetterMaplewood",

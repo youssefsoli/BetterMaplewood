@@ -245,10 +245,6 @@ const makeMarkbookEditable = () => {
                 inputHTML = `<span>${value}</span><input min="0" type="number" value="" style="display: none;" />`;
             else
                 return; // Ignore other values
-
-            // fix background colour styling
-            const rowStyle = $(this).parent().find('td:first').css('background-color');
-            $(this).css('background-color', rowStyle);
         }
 
         $(this).html(inputHTML);
