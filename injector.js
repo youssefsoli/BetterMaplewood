@@ -65,7 +65,7 @@ const injectScriptList = scriptList => {
         if (!settings.betterTableLayout)
             scriptList.betterTableLayout.enabled = false;
         
-        if (!settings.percentages && !settings.betterTableLayout)
+        if (!settings.percentages && !settings.liveModification)
             scriptList.selectors.enabled = false;
         
         Object.keys(scriptList).forEach(script => {
