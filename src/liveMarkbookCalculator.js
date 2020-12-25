@@ -181,23 +181,23 @@ const highlightChanges = () => {
 
         const currentMark = row.find(selectors.mark);
         if (currentMark.val() !== initialMarkbook[i].mark.val) {
-            currentMark.parent().css('background-color', '#ffe499');
+            currentMark.css('background-color', '#ffe499');
         } else {
-            currentMark.parent().css('background-color', initialMarkbook[i].mark.bgColor);
+            currentMark.css('background-color', initialMarkbook[i].mark.bgColor);
         }
 
         const currentWeight = row.find(selectors.weight);
         if (currentWeight.val() !== initialMarkbook[i].weight.val) {
-            currentWeight.parent().css('background-color', '#ffe499');
+            currentWeight.css('background-color', '#ffe499');
         } else {
-            currentWeight.parent().css('background-color', initialMarkbook[i].weight.bgColor);
+            currentWeight.css('background-color', initialMarkbook[i].weight.bgColor);
         }
 
         const currentDenominator = row.find(selectors.denominator);
         if (currentDenominator.val() !== initialMarkbook[i].denominator.val) {
-            currentDenominator.parent().css('background-color', '#ffe499');
+            currentDenominator.css('background-color', '#ffe499');
         } else {
-            currentDenominator.parent().css('background-color', initialMarkbook[i].denominator.bgColor);
+            currentDenominator.css('background-color', initialMarkbook[i].denominator.bgColor);
         }
     });
 };
