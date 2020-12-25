@@ -1,7 +1,7 @@
 /**
  * @desc Adds a blank new column to the markbook for displaying percentages
  */
-const addPercentageColumn = () => {
+const addPercentages = () => {
     // add percent header
     $('<td class="mwTABLE_CELL_HEADER tdAchievement" style="font-weight: bold" align="center">Percent</td>').insertAfter('#markbookTable tr:first td:last');
     

@@ -11,6 +11,10 @@ const scriptList = {
         file: 'src/liveMarkbookCalculator.js',
         enabled: true
     },
+    percentages: {
+        file: 'src/percentages.js',
+        enabled: true
+    },
     fixBgColor: {
         file: 'src/fixBgColor.js',
         enabled: true
@@ -46,8 +50,8 @@ const injectScriptList = scriptList => {
         if (!settings.liveModification)
             scriptList.liveModification.enabled = false; // Disable the script from loading
         
-        if (!settings.percentageColumn)
-            scriptList.percentageColumn.enabled = false; // Disable the script from loading
+        if (!settings.percentages)
+            scriptList.percentages.enabled = false; // Disable the script from loading
 
         Object.keys(scriptList).forEach(script => {
             if (scriptList[script].enabled)

@@ -50,8 +50,8 @@ loadMarkbook = function (studentID, classID, termID, topicID, title, refresh, st
             fixBgColor();
             makeMarkbookEditable();
             createInitialMarkbook();
-            if (settings.percentageColumn) {
-                addPercentageColumn();
+            if (settings.percentages) {
+                addPercentages();
                 calculatePercentages();
             }
         },

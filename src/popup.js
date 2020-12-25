@@ -8,12 +8,12 @@ const updateSettings = () => {
     let quickviewToggle = quickview.checked;
     let calculationToggle = calculation.checked;
     let liveModificationToggle = liveModification.checked;
-    let percentageColumnToggle = percentageColumn.checked;
+    let percentagesToggle = percentages.checked;
     let settings = {
         quickview: quickviewToggle,
         calculation: calculationToggle,
         liveModification: liveModificationToggle,
-        percentageColumn: percentageColumnToggle
+        percentages: percentagesToggle,
     };
 
     chrome.storage.sync.set(settings, () => {
@@ -36,13 +36,13 @@ chrome.storage.sync.get(null, (settings) => {
         quickview.checked = true;
         calculation.checked = true;
         liveModification.checked = true;
-        percentageColumn.checked = true;
+        percentages.checked = true;
         updateSettings();
     } else {
         quickview.checked = settings.quickview;
         calculation.checked = settings.calculation;
         liveModification.checked = settings.liveModification;
-        percentageColumn.checked = settings.percentageColumn;
+        percentages.checked = settings.percentages;
     }
 });
 
