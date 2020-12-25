@@ -20,6 +20,7 @@
     ],
     "web_accessible_resources": [
         "src/averageCalculator.js",
+        "src/loadMarkbook.js",
         "src/liveMarkbookCalculator.js",
         "src/percentages.js",
         "src/fixBgColor.js"
