@@ -28,23 +28,21 @@ const betterTableLayout = () => {
             if (!isNaN(parseFloat(numerator)) && numerator !== '') {
                 numerator = +parseFloat(numerator).toFixed(2);
             }
-            mark.html(`<span>${numerator}</span> <b>/</b> <span>${denominator.text()}</span>`);
-            mark.find('span:first').css({
-                'display': 'inline-block',
+            mark.html(`<input disabled>${numerator}</input> <b>/</b> <input disabled>${denominator.text()}</input>`);
+            
+            mark.find('input').css({
                 'margin': '0',
-                'text-align': 'right',
-                'width': '30pt'
+                'width': '30pt',
+                'font-family': 'inherit',
+                'cursor': 'text'
             });
-            mark.find('span:last').css({
-                'display': 'inline-block',
-                'margin': '0',
-                'text-align': 'left',
-                'width': '30pt'
-            });
+            mark.find('input:first').css('text-align', 'right');
+            mark.find('input:last').css('text-align', 'left');
+
             // set mark column width
             mark.css('width', '100px');
         } else {
-            mark.append(' <b>/</b> ', denominator.find('input'));
+            mark.append('<b>/</b>', denominator.find('input'));
             // fix styling
             const span = mark.find('span');
             const input = mark.find('input:first');
@@ -63,12 +61,14 @@ const betterTableLayout = () => {
             mark.find('input:first').css({
                 'text-align': 'right',
                 'width': '30pt',
-                'padding-right': '5pt'
+                'padding': '0pt 3pt',
+                'margin-right': '2pt'
             });
             mark.find('input:last').css({
                 'text-align': 'left',
                 'width': '30pt',
-                'padding-left': '5pt'
+                'padding': '0pt 3pt',
+                'margin-left': '2pt'
             });
             // set mark column width
             mark.css('width', '120px');
@@ -77,5 +77,6 @@ const betterTableLayout = () => {
         // reformat
         row.empty();
         row.append(name, mark, weight, date);
+
     });
 };
