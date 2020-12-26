@@ -6,6 +6,24 @@ let betterTableLayout = document.getElementById('betterTableLayout');
 let percentagePosition = document.getElementById('percentagePosition');
 let version = document.getElementById('version');
 
+const setElementDisplays = () => {
+    // hide percentages position select if percentages are disabled
+    document.getElementsByClassName('percentagePosition')[0].style.display = percentages.checked ? 'block' : 'none';
+
+    // hide 6th column option if better table layout is disabled
+    if (betterTableLayout.checked && percentagePosition.length === 4) {
+        let option = document.createElement('option');
+        option.text = '6';
+        option.value = '6';
+        percentagePosition.add(option);
+    }
+    if (!betterTableLayout.checked && percentagePosition.length === 5) {
+        if (percentagePosition.value === '6')
+            percentagePosition.value = '5';
+        percentagePosition.remove(percentagePosition.length - 1);
+    }
+};
+
 const updateSettings = () => {
     let quickviewToggle = quickview.checked;
     let calculationToggle = calculation.checked;
@@ -36,8 +54,7 @@ const updateSettings = () => {
         });
     });
 
-    // hide percentages position select if percentages are disabled
-    document.getElementsByClassName('percentagePosition')[0].style.display = percentages.checked ? 'block' : 'none';
+    setElementDisplays();
 };
 
 /* Set the initial values for the checkboxes */
@@ -62,8 +79,7 @@ chrome.storage.sync.get(null, (settings) => {
     if (!Object.keys(defaults).every(key => settings.hasOwnProperty(key))) // Check that settings has all the required keys
         updateSettings();
     
-    // hide percentages position select if percentages are disabled
-    document.getElementsByClassName('percentagePosition')[0].style.display = percentages.checked ? 'block' : 'none';
+    setElementDisplays();
 });
 
 quickview.onchange = updateSettings;
