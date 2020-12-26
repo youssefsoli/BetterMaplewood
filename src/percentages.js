@@ -1,8 +1,23 @@
 /**
  * @desc Adds a blank new column to the markbook for displaying percentages
+ * @throws Will throw an error if the percentages position is not 'Last column' or 'Second column'
  */
 const addPercentages = () => {
-    const insertLocation = settings.betterTableLayout ? 'td:first' : 'td:last';
+    // determine column insert position based on settings
+    let insertLocation;
+    switch (settings.percentagesPosition) {
+        case 'Last column':{
+            insertLocation = 'td:last';
+            break;
+        }
+        case 'Second column': {
+            insertLocation = 'td:first';
+            break;
+        }
+        default: {
+            throw new Error('Unknown percentages position', settings.percentagesPosition);
+        }
+    }
     
     // add percent header
     $('<td class="mwTABLE_CELL_HEADER tdAchievement" style="font-weight: bold" align="center">Percent</td>').insertAfter(`#markbookTable tr:first ${insertLocation}`);
@@ -13,7 +28,7 @@ const addPercentages = () => {
         $(this).find('td:first').css('width', newWidth);
     });
 
-    // copy end column (to keep row style) and paste it after the last column or second column depending on whether the better table layout is enabled
+    // copy end column (to keep row style) and paste it as the last column or second column depending on the selection
     $('#markbookTable tr:not(:first)').each(function () {
         const cell = $(this).find('td:last');
         $(cell).clone().insertAfter($(this).find(insertLocation));

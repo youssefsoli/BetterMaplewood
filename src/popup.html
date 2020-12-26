@@ -30,7 +30,19 @@
         .shadow {
             color: dimgray;
             display: block;
+            margin-bottom: 5px;
         }
+
+       select {
+           margin-top: 5px;
+           font-size: inherit;
+           border-radius: 5px;
+       }
+
+       .percentagesPosition {
+           margin-left: 23px;
+           margin-bottom: 10px;
+       }
     </style>
 </head>
 
@@ -53,12 +65,19 @@
         <label for="liveModification">Enable live mark modification</label>
     </div>
     <div>
-        <input checked data-size="mini" data-toggle="toggle" id="percentages" type="checkbox">
-        <label for="percentages">Enable percentage column</label>
-    </div>
-    <div>
         <input checked data-size="mini" data-toggle="toggle" id="betterTableLayout" type="checkbox">
         <label for="betterTableLayout">Enable better table layout</label>
+    </div>
+    <div>
+        <input checked data-size="mini" data-toggle="toggle" id="percentages" type="checkbox">
+        <label for="percentages">Enable percentage column</label>
+        <div class="percentagesPosition">
+            <label for="percentagesPosition">Position: </label>
+            <select id="percentagesPosition">
+                <option>Last column</option>
+                <option>Second column</option>
+            </select>
+        </div>
     </div>
     <hr>
     <div class="footer">
