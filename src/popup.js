@@ -11,13 +11,13 @@ const setElementDisplays = () => {
     document.getElementsByClassName('percentagePosition')[0].style.display = percentages.checked ? 'block' : 'none';
 
     // hide 6th column option if better table layout is disabled
-    if (betterTableLayout.checked && percentagePosition.length === 4) {
+    if (!betterTableLayout.checked && percentagePosition.length === 4) {
         let option = document.createElement('option');
         option.text = '6';
         option.value = '6';
         percentagePosition.add(option);
     }
-    if (!betterTableLayout.checked && percentagePosition.length === 5) {
+    if (betterTableLayout.checked && percentagePosition.length === 5) {
         if (percentagePosition.value === '6')
             percentagePosition.value = '5';
         percentagePosition.remove(percentagePosition.length - 1);
