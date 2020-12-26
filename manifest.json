@@ -18,6 +18,12 @@
             "all_frames": true
         }
     ],
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": false
+    },
     "web_accessible_resources": [
         "src/averageCalculator.js",
         "src/loadMarkbook.js",
