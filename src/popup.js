@@ -55,12 +55,10 @@ const updateSettings = () => {
                 });
         });
     });
-
 };
 
 /* Set the initial values for the checkboxes */
 chrome.storage.sync.get(null, (settings) => {
-    // assign saved value if it exist, otherwise value from default object above
     quickview.checked = settings.quickview;
     calculation.checked = settings.calculation;
     liveModification.checked = settings.liveModification;
