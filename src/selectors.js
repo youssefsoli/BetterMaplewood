@@ -33,6 +33,4 @@ const getSelectors = () => {
     // add percentage selector
     if (settings.percentages)
         selectors['percentage'] = `td:nth-child(${settings.percentagePosition})`;
-    
-    console.log(selectors);
 };
