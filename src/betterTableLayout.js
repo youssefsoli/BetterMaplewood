@@ -22,16 +22,13 @@ const betterTableLayout = () => {
         const weight = row.find('td:nth-child(4)').clone(true, true);
         const denominator = $(this).find('td:nth-child(5)').clone(true, true);
         
-        // set name column width
-        name.css('width', '350px');
-
         // combine mark and denominator
         if (!settings.liveModification) {
             let numerator = mark.text();
             if (!isNaN(parseFloat(numerator)) && numerator !== '') {
                 numerator = +parseFloat(numerator).toFixed(2);
             }
-            mark.html(`<span>${numerator}</span> / <span>${denominator.text()}</span>`);
+            mark.html(`<span>${numerator}</span> <b>/</b> <span>${denominator.text()}</span>`);
             mark.find('span:first').css({
                 'display': 'inline-block',
                 'margin': '0',
@@ -45,16 +42,16 @@ const betterTableLayout = () => {
                 'width': '30pt'
             });
             // set mark column width
-            mark.css('width', '105px');
+            mark.css('width', '100px');
         } else {
-            mark.append(' / ', denominator.find('input'));
+            mark.append(' <b>/</b> ', denominator.find('input'));
             // fix styling
             const span = mark.find('span');
             const input = mark.find('input:first');
             if (span) {
                 span.css({
                     'text-align': 'right',
-                    'width': '35pt'
+                    'width': '30pt'
                 });
                 span.bind('click', function () {
                     input.show();
@@ -65,14 +62,16 @@ const betterTableLayout = () => {
             }
             mark.find('input:first').css({
                 'text-align': 'right',
-                'width': '35pt'
+                'width': '30pt',
+                'padding-right': '5pt'
             });
             mark.find('input:last').css({
                 'text-align': 'left',
-                'width': '35pt' // TODO: check if this size works for the regular layout as well
+                'width': '30pt',
+                'padding-left': '5pt'
             });
             // set mark column width
-            mark.css('width', '125px');
+            mark.css('width', '120px');
         }
         
         // reformat
