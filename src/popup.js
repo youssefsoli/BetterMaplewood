@@ -25,6 +25,8 @@ const setElementDisplays = () => {
 };
 
 const updateSettings = () => {
+    setElementDisplays();
+
     let quickviewToggle = quickview.checked;
     let calculationToggle = calculation.checked;
     let liveModificationToggle = liveModification.checked;
@@ -54,7 +56,6 @@ const updateSettings = () => {
         });
     });
 
-    setElementDisplays();
 };
 
 /* Set the initial values for the checkboxes */
