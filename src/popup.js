@@ -65,7 +65,7 @@ chrome.storage.sync.get(null, (settings) => {
         liveModification: true,
         percentages: true,
         betterTableLayout: true,
-        percentagePosition: '2'
+        percentagePosition: '3'
     };
 
     // assign saved value if it exist, otherwise value from default object above
