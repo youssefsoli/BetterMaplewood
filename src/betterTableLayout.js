@@ -71,7 +71,7 @@ const betterTableLayout = () => {
                 'margin-left': '2pt'
             });
             // set mark column width
-            mark.css('width', '120px');
+            mark.css('width', '110px');
         }
         
         // reformat
