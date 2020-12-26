@@ -59,25 +59,13 @@ const updateSettings = () => {
 
 /* Set the initial values for the checkboxes */
 chrome.storage.sync.get(null, (settings) => {
-    const defaults = {
-        quickview: true,
-        calculation: true,
-        liveModification: true,
-        percentages: true,
-        betterTableLayout: true,
-        percentagePosition: '3'
-    };
-
     // assign saved value if it exist, otherwise value from default object above
-    quickview.checked = settings.quickview !== undefined ? settings.quickview : defaults.quickview;
-    calculation.checked = settings.calculation !== undefined ? settings.calculation : defaults.calculation;
-    liveModification.checked = settings.liveModification !== undefined ? settings.liveModification : defaults.liveModification;
-    percentages.checked = settings.percentages !== undefined ? settings.percentages : defaults.percentages;
-    betterTableLayout.checked = settings.betterTableLayout !== undefined ? settings.betterTableLayout : defaults.betterTableLayout;
-    percentagePosition.value = settings.percentagePosition !== undefined ? settings.percentagePosition : defaults.percentagePosition;
-
-    if (!Object.keys(defaults).every(key => settings.hasOwnProperty(key))) // Check that settings has all the required keys
-        updateSettings();
+    quickview.checked = settings.quickview;
+    calculation.checked = settings.calculation;
+    liveModification.checked = settings.liveModification;
+    percentages.checked = settings.percentages;
+    betterTableLayout.checked = settings.betterTableLayout;
+    percentagePosition.value = settings.percentagePosition;
     
     setElementDisplays();
 });
