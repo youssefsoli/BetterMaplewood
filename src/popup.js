@@ -52,13 +52,16 @@ chrome.storage.sync.get(null, (settings) => {
     };
 
     // assign saved value if it exist, otherwise value from default object above
-    quickview.checked = settings.quickview || defaults.quickview;
-    calculation.checked = settings.calculation || defaults.calculation;
-    liveModification.checked = settings.liveModification || defaults.liveModification;
-    percentages.checked = settings.percentages || defaults.percentages;
-    betterTableLayout.checked = settings.betterTableLayout || defaults.betterTableLayout;
-    percentagePosition.value = settings.percentagePosition || defaults.percentagePosition;
+    quickview.checked = settings.quickview !== undefined ? settings.quickview : defaults.quickview;
+    calculation.checked = settings.calculation !== undefined ? settings.calculation : defaults.calculation;
+    liveModification.checked = settings.liveModification !== undefined ? settings.liveModification : defaults.liveModification;
+    percentages.checked = settings.percentages !== undefined ? settings.percentages : defaults.percentages;
+    betterTableLayout.checked = settings.betterTableLayout !== undefined ? settings.betterTableLayout : defaults.betterTableLayout;
+    percentagePosition.value = settings.percentagePosition !== undefined ? settings.percentagePosition : defaults.percentagePosition;
 
+    if (!Object.keys(defaults).every(key => settings.hasOwnProperty(key))) // Check that settings has all the required keys
+        updateSettings();
+    
     // hide percentages position select if percentages are disabled
     document.getElementsByClassName('percentagePosition')[0].style.display = percentages.checked ? 'block' : 'none';
 });
