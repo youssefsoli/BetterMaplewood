@@ -21,6 +21,7 @@ const packExtension = (zipName, firefox = false) => {
     archive.directory(__dirname + '/../src', 'src', {});
     archive.directory(__dirname + '/../img', 'img', {});
     archive.file(__dirname + '/../injector.js', {name: 'injector.js'});
+    archive.file(__dirname + '/../background.js', {name: 'background.js'});
     archive.file(__dirname + '/../LICENSE', {name: 'LICENSE'});
     if (firefox) {
         let firefoxManifest = manifest;
