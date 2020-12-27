@@ -1,4 +1,42 @@
 /**
+ * @desc Inject styles for input boxes and mark cell
+ */
+const injectStyles = () => {
+    if (!settings.liveModification) {
+        $('#markbookTable table').prepend(`
+            <style type="text/css">
+                .js-mark-cell > input {
+                    -moz-appearance: textfield;
+                    border: none;
+                    display: inline;
+                    font-family: inherit;
+                    font-size: inherit;
+                    padding: 0;
+                    width: 30pt;
+                    background-color: inherit;
+                    cursor: text;
+                }
+
+                .js-mark-cell {
+                    width: 100px;
+                }
+            </style>`);
+    } else {
+        $('#markbookTable table').prepend(`
+            <style type="text/css">
+                .js-mark-cell > input {
+                    width: 30pt;
+                    padding: 0pt 3pt;
+                }
+
+                .js-mark-cell {
+                    width: 110px;
+                }
+            </style>`);
+    }
+};
+
+/**
  * @desc Combines mark and denominator into one cell
  */
 const betterTableLayout = () => {
@@ -13,6 +51,8 @@ const betterTableLayout = () => {
     row.empty();
     row.append(itemsHeader, marksHeader, weightHeader, dateHeader);
 
+    injectStyles();
+
     // fix table content
     $('#markbookTable tr:not(:first)').each(function () {
         const row = $(this);
@@ -21,6 +61,8 @@ const betterTableLayout = () => {
         const date = row.find('td:nth-child(3)').clone(true, true);
         const weight = row.find('td:nth-child(4)').clone(true, true);
         const denominator = $(this).find('td:nth-child(5)').clone(true, true);
+
+        mark.addClass('js-mark-cell');
         
         // combine mark and denominator
         if (!settings.liveModification) {
@@ -28,53 +70,44 @@ const betterTableLayout = () => {
             if (!isNaN(parseFloat(numerator)) && numerator !== '') {
                 numerator = +parseFloat(numerator).toFixed(2);
             }
-            mark.html(`<input disabled>${numerator}</input> <b>/</b> <input disabled>${denominator.text()}</input>`);
-            
-            mark.find('input').css({
-                'margin': '0',
-                'width': '30pt',
-                'font-family': 'inherit',
-                'cursor': 'text'
-            });
-            mark.find('input:first').css('text-align', 'right');
-            mark.find('input:last').css('text-align', 'left');
-
-            // set mark column width
-            mark.css('width', '100px');
+            mark.html('');
+            mark.append(
+                `<input disabled min="0" value="${numerator}" />`,
+                '<b>/</b>',
+                `<input disabled min="0" value="${denominator.text()}" />`
+            );
         } else {
             mark.append('<b>/</b>', denominator.find('input'));
-            // fix styling
-            const span = mark.find('span');
-            const input = mark.find('input:first');
-            if (span) {
-                span.css({
-                    'text-align': 'right',
-                    'width': '30pt'
-                });
-                span.bind('click', function () {
-                    input.show();
-                    input.focus();
-                    calculateMarks();
-                    $(this).remove();
-                });
-            }
-            mark.find('input:first').css({
-                'text-align': 'right',
-                'width': '30pt',
-                'padding': '0pt 3pt',
-                'margin-right': '2pt'
-            });
-            mark.find('input:last').css({
-                'text-align': 'left',
-                'width': '30pt',
-                'padding': '0pt 3pt',
-                'margin-left': '2pt'
-            });
-            // set mark column width
-            mark.css('width', '110px');
         }
+
+        // if a text mark exists, add it's functionality back
+        const span = mark.find('span');
+        if (span) {
+            span.css({
+                'text-align': 'right',
+                'width': '30pt'
+            });
+            span.bind('click', function () {
+                input.show();
+                input.focus();
+                calculateMarks();
+                $(this).remove();
+            });
+        }
+
+        // style numerator
+        mark.find('input:first').css({
+            'text-align': 'right',
+            'margin-right': '2pt'
+        });
+
+        // style denominator
+        mark.find('input:last').css({
+            'text-align': 'left',
+            'margin-left': '2pt'
+        });
         
-        // reformat
+        // create reformatted row
         row.empty();
         row.append(name, mark, weight, date);
 
