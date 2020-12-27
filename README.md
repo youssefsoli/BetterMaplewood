@@ -9,6 +9,8 @@
 * Modifiable weightings for each course
 * Mark overview to display each course's mark directly on the homepage
 * Live grade modification to help set mark goals
+* Percentage column for markbooks
+* Condensed mark UI for easy viewing
 
 # Installation
 
