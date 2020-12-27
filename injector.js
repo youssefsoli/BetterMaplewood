@@ -3,12 +3,28 @@ const scriptList = {
         file: 'src/averageCalculator.js',
         enabled: true
     },
-    percentageColumn: { // must be before liveModification because of function dependencies
-        file: 'src/percentages.js',
+    loadMarkbook: {
+        file: 'src/loadMarkbook.js',
+        enabled: true
+    },
+    selectors: {
+        file: 'src/selectors.js',
         enabled: true
     },
     liveModification: {
         file: 'src/liveMarkbookCalculator.js',
+        enabled: true
+    },
+    betterTableLayout: {
+        file: 'src/betterTableLayout.js',
+        enabled: true
+    },
+    percentages: {
+        file: 'src/percentages.js',
+        enabled: true
+    },
+    fixBgColor: {
+        file: 'src/fixBgColor.js',
         enabled: true
     }
 };
@@ -36,15 +52,22 @@ const injectScriptList = scriptList => {
 
         injectSettings(settings); // Give the DOM access to settings
 
+        // Disable scripts from loading if they are not needed
         if (!settings.calculation && !settings.quickview)
-            scriptList.calculation.enabled = false; // Disable the script from loading
+            scriptList.calculation.enabled = false; 
 
         if (!settings.liveModification)
-            scriptList.liveModification.enabled = false; // Disable the script from loading
+            scriptList.liveModification.enabled = false; 
         
-        if (!settings.percentageColumn)
-            scriptList.percentageColumn.enabled = false; // Disable the script from loading
+        if (!settings.percentages)
+            scriptList.percentages.enabled = false; 
 
+        if (!settings.betterTableLayout)
+            scriptList.betterTableLayout.enabled = false;
+        
+        if (!settings.percentages && !settings.liveModification)
+            scriptList.selectors.enabled = false;
+        
         Object.keys(scriptList).forEach(script => {
             if (scriptList[script].enabled)
                 injectScript(scriptList[script].file);

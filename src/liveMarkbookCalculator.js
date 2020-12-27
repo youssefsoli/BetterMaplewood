@@ -29,9 +29,9 @@ const calculateLayer = layer => {
         /* Update the mark display */
         let row = layer[i].row;
         if (row) {
-            row.find('td:nth-child(2) > input').val(+mark.toFixed(2));
-            row.find('td:nth-child(4) > input').val(weight);
-            row.find('td:nth-child(5) > input').val(markDenom);
+            row.find(selectors['mark']).val(+mark.toFixed(2));
+            row.find(selectors['weight']).val(weight);
+            row.find(selectors['denominator']).val(markDenom);
         }
     }
 
@@ -47,12 +47,12 @@ const calculateMarks = () => {
     for (let i = 0; i < markbook.length; i++) {
         let middle = markbook[i].children;
 
-        if ((isNaN(parseFloat(markbook[i].mark)) && markbook[i].mark !== '') || markbook[i].row.find('td:nth-child(2) > input').is(':hidden')) // Make sure top isn't already invalid or hidden
+        if ((isNaN(parseFloat(markbook[i].mark)) && markbook[i].mark !== '') || markbook[i].row.find(selectors['mark']).is(':hidden')) // Make sure top isn't already invalid or hidden
             continue;
 
         if (middle && middle.length) { // Make sure there is a middle layer to handle
             for (let j = 0; j < middle.length; j++) {
-                if ((isNaN(parseFloat(middle[j].mark)) && middle[j].mark !== '') || middle[j].row.find('td:nth-child(2) > input').is(':hidden')) // Make sure middle isn't already invalid or hidden
+                if ((isNaN(parseFloat(middle[j].mark)) && middle[j].mark !== '') || middle[j].row.find(selectors['mark']).is(':hidden')) // Make sure middle isn't already invalid or hidden
                     continue;
 
                 let bottom = middle[j].children;
@@ -102,9 +102,9 @@ const parseMarkbook = () => {
         switch (margin) {
             case '0px': {
                 markbook.push({
-                    mark: row.find('td:nth-child(2) > input').val(),
-                    weight: row.find('td:nth-child(4) > input').val(),
-                    denominator: row.find('td:nth-child(5) > input').val(),
+                    mark: row.find(selectors['mark']).val(),
+                    weight: row.find(selectors['weight']).val(),
+                    denominator: row.find(selectors['denominator']).val(),
                     children: [],
                     row: row
                 });
@@ -112,9 +112,9 @@ const parseMarkbook = () => {
             }
             case '20px': {
                 markbook[markbook.length - 1].children.push({ // Push a middle row into the latest top level
-                    mark: row.find('td:nth-child(2) > input').val(),
-                    weight: row.find('td:nth-child(4) > input').val(),
-                    denominator: row.find('td:nth-child(5) > input').val(),
+                    mark: row.find(selectors['mark']).val(),
+                    weight: row.find(selectors['weight']).val(),
+                    denominator: row.find(selectors['denominator']).val(),
                     children: [],
                     row: row
                 });
@@ -129,9 +129,9 @@ const parseMarkbook = () => {
                 }
 
                 middle.push({
-                    mark: row.find('td:nth-child(2) > input').val(),
-                    weight: row.find('td:nth-child(4) > input').val(),
-                    denominator: row.find('td:nth-child(5) > input').val(),
+                    mark: row.find(selectors['mark']).val(),
+                    weight: row.find(selectors['weight']).val(),
+                    denominator: row.find(selectors['denominator']).val(),
                     row: row
                 });
                 break;
@@ -179,25 +179,25 @@ const highlightChanges = () => {
     $('#markbookTable table tbody > tr:gt(0)').each(function (i) {
         const row = $(this);
 
-        const currentMark = row.find('td:nth-child(2) > input');
+        const currentMark = row.find(selectors['mark']);
         if (currentMark.val() !== initialMarkbook[i].mark.val) {
-            currentMark.parent().css('background-color', '#ffe499');
+            currentMark.css('background-color', '#ffe499');
         } else {
-            currentMark.parent().css('background-color', initialMarkbook[i].mark.bgColor);
+            currentMark.css('background-color', initialMarkbook[i].mark.bgColor);
         }
 
-        const currentWeight = row.find('td:nth-child(4) > input');
+        const currentWeight = row.find(selectors['weight']);
         if (currentWeight.val() !== initialMarkbook[i].weight.val) {
-            currentWeight.parent().css('background-color', '#ffe499');
+            currentWeight.css('background-color', '#ffe499');
         } else {
-            currentWeight.parent().css('background-color', initialMarkbook[i].weight.bgColor);
+            currentWeight.css('background-color', initialMarkbook[i].weight.bgColor);
         }
 
-        const currentDenominator = row.find('td:nth-child(5) > input');
+        const currentDenominator = row.find(selectors['denominator']);
         if (currentDenominator.val() !== initialMarkbook[i].denominator.val) {
-            currentDenominator.parent().css('background-color', '#ffe499');
+            currentDenominator.css('background-color', '#ffe499');
         } else {
-            currentDenominator.parent().css('background-color', initialMarkbook[i].denominator.bgColor);
+            currentDenominator.css('background-color', initialMarkbook[i].denominator.bgColor);
         }
     });
 };
@@ -208,6 +208,13 @@ const highlightChanges = () => {
 const makeMarkbookEditable = () => {
     $('#markbookTable table').prepend(`
     <style type="text/css">
+        .textMark {
+            display: inline-block;
+            width: 30pt;
+            padding-left: 3pt;
+            padding-right: 3pt; 
+        }
+
         input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
@@ -224,6 +231,9 @@ const makeMarkbookEditable = () => {
             text-align: center; 
             width: 30pt; 
             background-color: inherit;
+            border-radius: 3pt;
+            padding-left: 3pt;
+            padding-right: 3pt;
         }
     </style>`);
     
@@ -240,15 +250,11 @@ const makeMarkbookEditable = () => {
 
         if (isNaN(parseFloat(value)) && value !== '') {
             if (value === 'NHI' || value === 'INC')
-                inputHTML = `<span>${value}</span><input min="0" type="number" value="0" style="display: none;" />`;
+                inputHTML = `<span class="textMark">${value}</span><input min="0" type="number" value="0" style="display: none;" />`;
             else if (value === 'EXC' || value === 'ABS' || value === 'COL') // EXC and ABS
-                inputHTML = `<span>${value}</span><input min="0" type="number" value="" style="display: none;" />`;
+                inputHTML = `<span class="textMark">${value}</span><input min="0" type="number" value="" style="display: none;" />`;
             else
                 return; // Ignore other values
-
-            // fix background colour styling
-            const rowStyle = $(this).parent().find('td:first').css('background-color');
-            $(this).css('background-color', rowStyle);
         }
 
         $(this).html(inputHTML);
@@ -265,7 +271,7 @@ const makeMarkbookEditable = () => {
         }
         
         const margin = $(this).parent().find('td:first > span:first')[0].style['margin-left']; // determines if the row is for an assignment, section, or unit
-        const isMarkColumn = $(this).nextAll().length === 3; // the mark column has 3 cells after it
+        const isTargetColumn = $(this).nextAll().length === 3 || $(this).nextAll().length === 0; // the mark column has 3 cells after it and the denominator column has 0
         
         let hasChildren;
         if ($(this).parent().nextAll().length !== 0) { // check if the current row is the last row
@@ -275,81 +281,18 @@ const makeMarkbookEditable = () => {
             hasChildren = false;
         }
 
-        // only assignments and sections/units without children should have their marks editable 
+        // only assignments and sections/units without children should have their marks and denominators editable 
         // other marks are dependent on the marks of their children so their input fields should be disabled
-        if (margin !== '40px' && isMarkColumn && hasChildren) {
+        if (margin !== '40px' && isTargetColumn && hasChildren) {
             $(input).prop('disabled', true); // to maintain compatibility with other functions, the input is disabled rather than completely removed
             $(input).css('cursor', 'text'); // give the appearance of regular text
         } else {
             $(input).bind('input', function () {
                 calculateMarks();
                 highlightChanges();
-                if (settings.percentageColumn)
+                if (settings.percentages)
                     calculatePercentages();
             });
-        }
-    });
-};
-
-/* Load Markbook Override (Pre-existing function used when a markbook is opened) */
-loadMarkbook = function (studentID, classID, termID, topicID, title, refresh, stuLetters, orgId) {
-
-    if (refresh) {
-        studentID = studentID_;
-        classID = classID_;
-        topicID = topicID_;
-        termID = termID_;
-        title = title_;
-        stuLetters = stuLetters_;
-        orgId = orgId_;
-    } else {
-        studentID_ = studentID;
-        classID_ = classID;
-        topicID_ = topicID;
-        title_ = title;
-        termID_ = termID;
-        stuLetters_ = stuLetters;
-        orgId_ = orgId;
-    }
-
-    $('#MarkbookDialog').dialog('option', 'title', title);
-    $('#markbookTable').html('<div><img alt="Loading...." src="' + mwMrkBookDialogRootPath + 'viewer/clsmgr/images/ajax-loader2.gif" />&nbsp;Loading...</div>');
-    $('#MarkbookDialog').dialog('option', 'height', 'auto').dialog('open');
-
-    let fromDate = $('#mrkbkFromDate').datepicker().val();
-    let toDate = $('#mrkbkToDate').datepicker().val();
-
-    $.ajax({
-        type: 'POST',
-        url: mwMrkBookDialogRootPath + 'viewer/Achieve/TopicBas/StuMrks.aspx/GetMarkbook',
-        data: JSON.stringify({
-            studentID: studentID,
-            classID: classID,
-            termID: termID,
-            topicID: topicID,
-            fromDate: fromDate,
-            toDate: toDate,
-            relPath: mwMrkBookDialogRootPath,
-            stuLetters: stuLetters || '',
-            orgID: orgId || -1
-        }),
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-        success: function (msg) {
-            $('#MarkbookDialog').dialog('close');
-            $('#markbookTable').html(msg.d);
-            $('#MarkbookDialog').dialog('option', 'height', 'auto').dialog('open');
-            $('#markbookTable td[mrkTble!=\'1\']').addClass('tdAchievement');
-            makeMarkbookEditable();
-            createInitialMarkbook();
-            if (settings.percentageColumn) {
-                addPercentageColumn();
-                calculatePercentages();
-            }
-        },
-        error: function () {
-            $('#markbookTable').html('(error loading marbook)');
-            $('#MarkbookDialog').dialog('option', 'height', 'auto').dialog('open');
         }
     });
 };
