@@ -5,7 +5,14 @@ const addPercentages = () => {
     const insertLocation = `td:nth-child(${parseInt(settings.percentagePosition) - 1})`;
     
     // add percent header
-    $('<td class="mwTABLE_CELL_HEADER tdAchievement" style="font-weight: bold; width: 10%;" align="center">Percent</td>').insertAfter(`#markbookTable tr:first ${insertLocation}`);
+    $('<td class="mwTABLE_CELL_HEADER tdAchievement" style="font-weight: bold;" align="center">Percent</td>')
+        .insertAfter(`#markbookTable tr:first ${insertLocation}`);
+    
+    // set width of percentage column if better table layout is enabled
+    if (settings.betterTableLayout) {
+        const percentageHeader = $(`#markbookTable td:first ${selectors.percentage}`);
+        percentageHeader.css('width', '10%');
+    }
 
     // copy end column (to keep row style) and paste it in the selected insert location
     $('#markbookTable tr:not(:first)').each(function () {
