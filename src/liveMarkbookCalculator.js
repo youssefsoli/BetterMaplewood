@@ -29,9 +29,9 @@ const calculateLayer = layer => {
         /* Update the mark display */
         let row = layer[i].row;
         if (row) {
-            row.find(selectors['mark']).val(+mark.toFixed(2));
-            row.find(selectors['weight']).val(weight);
-            row.find(selectors['denominator']).val(markDenom);
+            row.find(selectors.mark).val(+mark.toFixed(2));
+            row.find(selectors.weight).val(weight);
+            row.find(selectors.denominator).val(markDenom);
         }
     }
 
@@ -47,12 +47,12 @@ const calculateMarks = () => {
     for (let i = 0; i < markbook.length; i++) {
         let middle = markbook[i].children;
 
-        if ((isNaN(parseFloat(markbook[i].mark)) && markbook[i].mark !== '') || markbook[i].row.find(selectors['mark']).is(':hidden')) // Make sure top isn't already invalid or hidden
+        if ((isNaN(parseFloat(markbook[i].mark)) && markbook[i].mark !== '') || markbook[i].row.find(selectors.mark).is(':hidden')) // Make sure top isn't already invalid or hidden
             continue;
 
         if (middle && middle.length) { // Make sure there is a middle layer to handle
             for (let j = 0; j < middle.length; j++) {
-                if ((isNaN(parseFloat(middle[j].mark)) && middle[j].mark !== '') || middle[j].row.find(selectors['mark']).is(':hidden')) // Make sure middle isn't already invalid or hidden
+                if ((isNaN(parseFloat(middle[j].mark)) && middle[j].mark !== '') || middle[j].row.find(selectors.mark).is(':hidden')) // Make sure middle isn't already invalid or hidden
                     continue;
 
                 let bottom = middle[j].children;
@@ -102,9 +102,9 @@ const parseMarkbook = () => {
         switch (margin) {
             case '0px': {
                 markbook.push({
-                    mark: row.find(selectors['mark']).val(),
-                    weight: row.find(selectors['weight']).val(),
-                    denominator: row.find(selectors['denominator']).val(),
+                    mark: row.find(selectors.mark).val(),
+                    weight: row.find(selectors.weight).val(),
+                    denominator: row.find(selectors.denominator).val(),
                     children: [],
                     row: row
                 });
@@ -112,9 +112,9 @@ const parseMarkbook = () => {
             }
             case '20px': {
                 markbook[markbook.length - 1].children.push({ // Push a middle row into the latest top level
-                    mark: row.find(selectors['mark']).val(),
-                    weight: row.find(selectors['weight']).val(),
-                    denominator: row.find(selectors['denominator']).val(),
+                    mark: row.find(selectors.mark).val(),
+                    weight: row.find(selectors.weight).val(),
+                    denominator: row.find(selectors.denominator).val(),
                     children: [],
                     row: row
                 });
@@ -129,9 +129,9 @@ const parseMarkbook = () => {
                 }
 
                 middle.push({
-                    mark: row.find(selectors['mark']).val(),
-                    weight: row.find(selectors['weight']).val(),
-                    denominator: row.find(selectors['denominator']).val(),
+                    mark: row.find(selectors.mark).val(),
+                    weight: row.find(selectors.weight).val(),
+                    denominator: row.find(selectors.denominator).val(),
                     row: row
                 });
                 break;
@@ -179,21 +179,21 @@ const highlightChanges = () => {
     $('#markbookTable table tbody > tr:gt(0)').each(function (i) {
         const row = $(this);
 
-        const currentMark = row.find(selectors['mark']);
+        const currentMark = row.find(selectors.mark);
         if (currentMark.val() !== initialMarkbook[i].mark.val) {
             currentMark.css('background-color', '#ffe499');
         } else {
             currentMark.css('background-color', initialMarkbook[i].mark.bgColor);
         }
 
-        const currentWeight = row.find(selectors['weight']);
+        const currentWeight = row.find(selectors.weight);
         if (currentWeight.val() !== initialMarkbook[i].weight.val) {
             currentWeight.css('background-color', '#ffe499');
         } else {
             currentWeight.css('background-color', initialMarkbook[i].weight.bgColor);
         }
 
-        const currentDenominator = row.find(selectors['denominator']);
+        const currentDenominator = row.find(selectors.denominator);
         if (currentDenominator.val() !== initialMarkbook[i].denominator.val) {
             currentDenominator.css('background-color', '#ffe499');
         } else {
