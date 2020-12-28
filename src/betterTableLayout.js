@@ -104,7 +104,6 @@ const betterTableLayout = () => {
         const weight = row.find('td:nth-child(4)').clone(true, true);
         const denominator = $(this).find('td:nth-child(5)').clone(true, true);
 
-        name.css('width', '');
         mark.addClass('js-mark-cell');
         
         // combine mark and denominator
