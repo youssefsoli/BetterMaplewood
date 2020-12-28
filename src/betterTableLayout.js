@@ -113,10 +113,9 @@ const betterTableLayout = () => {
             if (!isNaN(parseFloat(numerator)) && numerator !== '') {
                 numerator = +parseFloat(numerator).toFixed(2);
             }
-            mark.html('');
-            mark.append(
-                `<input disabled min="0" value="${numerator}" />`,
-                '<b>/</b>',
+            mark.html(
+                `<input disabled min="0" value="${numerator}" />` +
+                '<b>/</b>' +
                 `<input disabled min="0" value="${denominator.text()}" />`
             );
         } else {
