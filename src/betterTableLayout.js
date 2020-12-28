@@ -18,7 +18,7 @@ const injectStyles = () => {
                 }
 
                 .js-mark-cell {
-                    width: 100px;
+                    min-width: 95px;
                 }
             </style>`);
     } else {
@@ -30,28 +30,70 @@ const injectStyles = () => {
                 }
 
                 .js-mark-cell {
-                    width: 110px;
+                    min-width: 110px;
                 }
             </style>`);
     }
 };
 
 /**
+ * @desc Get the widths of the markbook columns
+ * @returns Object with the column as the key and the column width as the value
+ */
+const getColumnWidths = () => {
+    let columnWidths;
+    if (settings.percentages) {
+        columnWidths = {
+            items: 46,
+            marks: 18,
+            weight: 10,
+            date: 16
+        };
+    }
+    else {
+        columnWidths = {
+            items: 50,
+            marks: 18,
+            weight: 14,
+            date: 18
+        };
+    }
+
+    if (!settings.liveModification) {
+        columnWidths.marks -= 2;
+        columnWidths.items += 2;
+    }
+
+    // convert numbers to percentage strings
+    Object.keys(columnWidths).forEach(function (key) {
+        columnWidths[key] = JSON.stringify(columnWidths[key]) + '%';
+    });
+
+    return columnWidths;
+};
+
+/**
  * @desc Combines mark and denominator into one cell
  */
 const betterTableLayout = () => {
-    // fix table header
     const row = $('#markbookTable tr:first');
     const itemsHeader = row.find('td:nth-child(1)');
     const marksHeader = row.find('td:nth-child(2)');
     const dateHeader = row.find('td:nth-child(3)');
     const weightHeader = row.find('td:nth-child(4)');
 
-    // reformat
+    injectStyles();
+
+    // set the widths of the columns to a percentage
+    const columnWidths = getColumnWidths();
+    itemsHeader.css('width', columnWidths.items);
+    marksHeader.css('width', columnWidths.marks);
+    weightHeader.css('width', columnWidths.weight);
+    dateHeader.css('width', columnWidths.date);
+
+    // reformat table header
     row.empty();
     row.append(itemsHeader, marksHeader, weightHeader, dateHeader);
-
-    injectStyles();
 
     // fix table content
     $('#markbookTable tr:not(:first)').each(function () {
@@ -62,6 +104,7 @@ const betterTableLayout = () => {
         const weight = row.find('td:nth-child(4)').clone(true, true);
         const denominator = $(this).find('td:nth-child(5)').clone(true, true);
 
+        name.css('width', '');
         mark.addClass('js-mark-cell');
         
         // combine mark and denominator
@@ -83,6 +126,7 @@ const betterTableLayout = () => {
         // if a text mark exists, add it's functionality back
         const span = mark.find('span');
         if (span) {
+            const input = mark.find('input:first');
             span.css({
                 'text-align': 'right',
                 'width': '30pt'
@@ -95,13 +139,11 @@ const betterTableLayout = () => {
             });
         }
 
-        // style numerator
+        // style numerator and denominator (styles must be directly added as an attribute in order to override the classes)
         mark.find('input:first').css({
             'text-align': 'right',
             'margin-right': '2pt'
         });
-
-        // style denominator
         mark.find('input:last').css({
             'text-align': 'left',
             'margin-left': '2pt'

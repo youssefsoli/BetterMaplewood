@@ -2,7 +2,6 @@ let selectors = {};
 
 /**
  * @desc Get correct jQuery selectors depending on the table layout
- * @throws Will throw an error if the percentages position is not 'Last column' or 'Second column'
  */
 const getSelectors = () => {
     const initialPosition = {
