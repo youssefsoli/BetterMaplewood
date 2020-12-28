@@ -19,7 +19,8 @@
         }
     ],
     "background": {
-        "service_worker": "background.js"
+        "scripts": ["background.js"],
+        "persistent": false
     },
     "web_accessible_resources": [
         "src/averageCalculator.js",
@@ -41,5 +42,5 @@
         "128": "img/icon128.png",
         "196": "img/icon196.png"
     },
-    "manifest_version": 3
+    "manifest_version": 2
 }
