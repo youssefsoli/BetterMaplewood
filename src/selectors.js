@@ -5,9 +5,9 @@ let selectors = {};
  */
 const getSelectors = () => {
     const initialPosition = {
-        'mark': 2,
-        'weight': settings.betterTableLayout ? 3 : 4,
-        'denominator': settings.betterTableLayout ? 2 : 5
+        mark: 2,
+        weight: settings.betterTableLayout ? 3 : 4,
+        denominator: settings.betterTableLayout ? 2 : 5
     };
     const percentagePosition = parseInt(settings.percentagePosition);
 
@@ -25,11 +25,11 @@ const getSelectors = () => {
 
     // add first or last to selector
     if (settings.betterTableLayout) {
-        selectors['mark'] += ':first';
-        selectors['denominator'] += ':last';
+        selectors.mark += ':first';
+        selectors.denominator += ':last';
     }
 
     // add percentage selector
     if (settings.percentages)
-        selectors['percentage'] = `td:nth-child(${settings.percentagePosition})`;
+        selectors.percentage = `td:nth-child(${settings.percentagePosition})`;
 };

@@ -20,11 +20,11 @@ const addPercentages = () => {
  */
 const calculatePercentages = () => {
     $('#markbookTable tr:not(:first)').each(function () {
-        const mark = parseFloat($(this).find(selectors['mark']).val());
-        const denominator = parseFloat($(this).find(selectors['denominator']).val());
+        const mark = parseFloat($(this).find(selectors.mark).val());
+        const denominator = parseFloat($(this).find(selectors.denominator).val());
 
         const percentage = +(mark / denominator * 100).toFixed(2);
-        const percentageCell = $(this).find(selectors['percentage']);
+        const percentageCell = $(this).find(selectors.percentage);
 
         // change the percentage cell's value if the percentage is valid, otherwise clear it
         if (!isNaN(percentage)) {
