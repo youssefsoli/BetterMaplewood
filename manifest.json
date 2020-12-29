@@ -1,7 +1,7 @@
 {
     "name": "BetterMaplewood",
     "description": "BetterMaplewood, a browser extension to make your maplewood experience better",
-    "version": "2.5.1",
+    "version": "2.5.2",
     "permissions": [
         "activeTab",
         "storage"
