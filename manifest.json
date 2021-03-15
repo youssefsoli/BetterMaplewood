@@ -9,7 +9,8 @@
     "content_scripts": [
         {
             "matches": [
-                "*://hosting.maplewood.com/*/main.aspx*"
+                "*://hosting.maplewood.com/*/main.aspx*",
+                "*://connected-west.edsemblicloud.com/*/main.aspx*"
             ],
             "js": [
                 "injector.js"
