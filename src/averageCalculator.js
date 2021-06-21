@@ -22,7 +22,7 @@ const waitForLoad = (cb) => {
  */
 const grabMarkBooks = markBooks => {
     try {
-        $('table a[onclick]').not(':last').each(function () {
+      $('table a[onclick][title=Mark]').each(function () {
             const $row = $(this).closest('tr'); // Store the jQuery row as a variable
             const className = $row.find('td:first').text(); // Grab the class name from the first column
             let multiplier = $row.find('td:nth-child(3) > input').val(); // Grab the weight from the third column
