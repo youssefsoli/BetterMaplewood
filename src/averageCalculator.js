@@ -22,7 +22,7 @@ const waitForLoad = (cb) => {
  */
 const grabMarkBooks = markBooks => {
     try {
-        $('table a[onclick]').not(':last').each(function () {
+      $('table a[onclick][title=Mark]').each(function () {
             const $row = $(this).closest('tr'); // Store the jQuery row as a variable
             const className = $row.find('td:first').text(); // Grab the class name from the first column
             let multiplier = $row.find('td:nth-child(3) > input').val(); // Grab the weight from the third column
@@ -288,6 +288,20 @@ const addItemToTable = (item, itemName, id) => {
 };
 
 /**
+ * @desc Displays additional markbooks with the title as the link text and on a separate line
+ */
+const fixMultipleMarkbookDisplay = () => {
+    $('table a[onclick][title!=Mark]').not(':last').each(function () {
+        // Set the link text to the title
+        const title = $(this).attr('title');
+        $(this).html(title); 
+
+        // Add the value at the end on a separate line
+        $(this).parent().append('<br/>', $(this))
+    });
+}
+
+/**
  * @desc Parses the injection of averages
  */
 const injectScores = async () => {
@@ -299,6 +313,9 @@ const injectScores = async () => {
         /* Inject css for the inputs */
         $('#TableSecondaryClasses table').prepend('<style type="text/css">input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;}input[type="number"].grade{text-align: left}' +
             'input[type="number"] {-moz-appearance: textfield; margin: 0; border: none; display: inline; font-family: Monaco, Courier, monospace; font-size: inherit; padding: 0; text-align: center; width: 30pt; background-color: inherit;}</style>');
+
+        // Fix the display of any additional markbooks
+        fixMultipleMarkbookDisplay()
 
         let markBooks = [];
         window.markBooks = [];
